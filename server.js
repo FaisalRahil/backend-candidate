@@ -4,6 +4,7 @@ const dotenv = require("dotenv");
 const morgan = require("morgan");
 const connectDB = require("./config/db");
 const colors = require("colors");
+const errorHandler = require('./middleware/error');
 
 
 // Load env vars
@@ -14,11 +15,16 @@ connectDB();
 
 const app = express();
 
+// Body parser
+app.use(express.json());
+
 // Route files
 const candidates = require("./routes/candidates");
 
 // Mount routers
 app.use("/api/v1/candidates", candidates);
+
+app.use(errorHandler);
 
 // Dev logging middleware
 if (process.env.NODE_ENV === "development") {
