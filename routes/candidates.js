@@ -4,10 +4,13 @@ const {
     getCandidate,
     createCandidate,
     updateCandidate,
-    deleteCandidate
+    deleteCandidate,
+    getCandidatesInRadius
 } = require("../controllers/candidates");
 
 const router = express.Router();
+
+router.route('/radius/:zipcode/:distance').get(getCandidatesInRadius);
 
 router
     .route("/")

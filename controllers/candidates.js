@@ -1,12 +1,23 @@
-const Candidate = require("../models/Candidate");
+
 const ErrorResponse = require("../utils/errorResponse");
 const asyncHandler = require("../middleware/async");
+const geocoder = require('../utils/geocoder');
+const Candidate = require("../models/Candidate");
 
 // @desc      Get all candidates
 // @route     GET /api/v1/candidates
 // @access    Public
 exports.getCandidates = asyncHandler(async (req, res, next) => {
-    const candidates = await Candidate.find();
+    
+    let query;
+
+    let queryStr = JSON.stringify(req.query);
+
+    queryStr = queryStr.replace(/\b(gt|gte|lt|lte|in)\b/g, match => `$${match}`);
+
+    query = Candidate.find(JSON.parse(queryStr));
+
+    const candidates = await query;
     res.status(200).json({
         success: true,
         count: candidates.length,
@@ -89,4 +100,29 @@ exports.deleteCandidate = asyncHandler(async (req, res, next) => {
         success: true,
         data: {}
     });
+});
+
+
+// @desc      Get candidates within a radius
+// @route     GET /api/v1/candidates/radius/:zipcode/:distance
+// @access    Privete
+exports.getCandidatesInRadius = asyncHandler(async (req, res, next) => {
+    const {zipcode, distance} = req.params;
+
+    // get len/lng from geocoder
+    const loc = await geocoder.geocode(zipcode);
+    const lat = loc[0].latitude;
+    const lng = loc[0].longitude;
+
+    const radius = distance / 3963;
+
+    const candidates = await Candidate.find({
+        location:{ $geoWithin: { centerSphere: [[lng, lat], radius]}}
+    });
+
+    res.status(200).json({
+        seccess: true,
+        count: candidates.length,
+        data: candidates
+    })
 });
