@@ -11,13 +11,47 @@ exports.getCandidates = asyncHandler(async (req, res, next) => {
     
     let query;
 
-    let queryStr = JSON.stringify(req.query);
+    // Copy req.query
+    reqQuery = {...req.query};
 
+    const removeFields = ['select', 'sort'];
+
+    removeFields.forEach(param => delete reqQuery[param]);
+
+    // Create Query string 
+    let queryStr = JSON.stringify(reqQuery);
+
+    // Create operaters like ($gt, $gte,)
     queryStr = queryStr.replace(/\b(gt|gte|lt|lte|in)\b/g, match => `$${match}`);
 
+    // finding recorce select field
     query = Candidate.find(JSON.parse(queryStr));
 
+    // select Fields
+    if(req.query.select){
+        const fields = req.query.select.split(',').join(' ');
+        query = query.select(fields);
+    }
+
+    // sort
+    if (req.query.sort) {
+        const sortBy = req.query.sort.split(',').join(' ');
+        query = query.sort(sortBy);
+    } else{
+        query = query.sort('-createdAt');
+    }
+
+    // pagination
+    const page = parseInt(req.query.page, 10) || 1;
+    const limit = parseInt(req.query.limit, 10) || 2;
+    const startIndex = (page - 1) * limit;
+    const endIndex = page * limit;
+    const total = await Candidate.countDocuments();
+
+    query = query.skip(startIndex).limit(limit);
+
     const candidates = await query;
+
     res.status(200).json({
         success: true,
         count: candidates.length,
