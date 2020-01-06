@@ -18,6 +18,15 @@ router
     .post(createCandidate);
 
     router
+    .route("/parm/:parameter").get((req,res) => {
+        res.status(200).json({hi:req.params.parameter})
+    })
+    
+    router.route("/hi").get((req,res) => {
+        res.status(200).json({hi:"hi"})
+    })
+
+    router
     .route("/:id")
     .get(getCandidate)
     .put(updateCandidate)
