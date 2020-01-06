@@ -22,7 +22,7 @@ router
         res.status(200).json({hi:req.params.parameter})
     })
     
-    router.route("/hi").get((req,res) => {
+    router.route("/test").get((req,res) => {
         res.status(200).json({hi:"hi"})
     })
 

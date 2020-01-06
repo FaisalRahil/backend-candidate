@@ -32,11 +32,16 @@ describe('candiate route test', ()=> {
        
     })
 
+    it('should delete an exisiting candidate', () => {
+     
+       
+    })
+
 
     it('should request hi routes', () => {
      
         request(app)
-        .get('/hi')
+        .get('/test')
         .expect('Content-Type', 'application/json; charset=utf-8')
         .expect(200)
         .end(function(err, res) {
