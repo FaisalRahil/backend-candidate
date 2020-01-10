@@ -5,13 +5,14 @@ const SubconstituencySchema  = mongoose.Schema({
 
     subconstituencyID: {
         type: Number,
-        require: [true, ""]
+        require: [true, ""],
+        unique: true,
     },
     consistuency: {
         type: mongoose.Schema.Types.ObjectId,
         require: [true, ""]
     },
-    bureau: {
+    bureauID: {
         type: mongoose.Schema.Types.ObjectId,
         require: [true, ""]
     },
@@ -22,6 +23,10 @@ const SubconstituencySchema  = mongoose.Schema({
     englishName: {
         type: String,
         require: [true, ""]
+    },
+    electionID:{
+        type:mongoose.Schema.Types.ObjectId,
+        unique: true,
     },
     createdAt: {
         type: Date,

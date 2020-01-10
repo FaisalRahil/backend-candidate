@@ -3,7 +3,8 @@ const mongoose = require("mongoose");
 RegionSchema  = mongoose.Schema({
     regionID:{
         type:Number,
-        require:[true,""]
+        require:[true,""],
+        unique: true,
     },
     arabicName:{
         type:String,
@@ -12,6 +13,10 @@ RegionSchema  = mongoose.Schema({
     englishName:{
         type:String,
         require:[true,""]
+    },
+    electionID:{
+        type:mongoose.Schema.Types.ObjectId,
+        unique: true,
     },
     createdAt:{
         type:Date,

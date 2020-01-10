@@ -3,15 +3,15 @@ const mongoose = require('mongoose')
 const BureauSchema = mongoose.Schema({
     bureauID:{
         type: mongoose.Schema.Types.ObjectId,
-        require: [true, ""]
+        required: [true, ""]
     },
     arabicName:{
         type:String,
-        require:[true,""]
+        required:[true,""]
     },
     englishName:{
         type:String,
-        require:[true,""]
+        required:[true,""]
     },
     createdAt: {
         type: Date,
