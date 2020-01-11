@@ -45,6 +45,7 @@ exports.updateElection = asyncHandler(async (req, res, next) => {
         req.body.electionID,
         req.body,
         {
+            new: true,
             runValidators: true
         }
     )
@@ -63,3 +64,42 @@ exports.updateElection = asyncHandler(async (req, res, next) => {
         data: updatedElection
     })
 })
+
+exports.changeElectionStatus = asyncHandler(async (req, res, next) => {
+
+    
+        const updatedElection = await Election.findOneAndUpdate(
+            {
+                _id: req.body.electionID,
+            },
+            {
+                $set: { status: req.body.status }
+            },
+            {
+                new: true,
+                runValidators: true
+            }
+        )
+
+        if (!updatedElection) {
+
+            return next(
+                new ErrorResponse(
+                    `Election under this id ${req.body.electionID} is not found`,
+                    404
+                )
+            )
+
+        }
+        res.status(200).json({
+            success: true,
+            data: updatedElection
+        })
+
+    
+
+})
+
+
+
+

@@ -15,7 +15,12 @@ const ElectionSchema = mongoose.Schema({
             'Presidential Election',
             'Parliament Election',
             'Constitution Referendum'
-        ]
+        ],
+        required: [true, '']
+    },
+    status:{
+       type:Boolean,
+       default:true
     },
     createdAt: {
         type: Date,
