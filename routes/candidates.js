@@ -17,14 +17,6 @@ router
     .get(getCandidates)
     .post(createCandidate);
 
-    router
-    .route("/parm/:parameter").get((req,res) => {
-        res.status(200).json({hi:req.params.parameter})
-    })
-    
-    router.route("/test").get((req,res) => {
-        res.status(200).json({hi:"hi"})
-    })
 
     router
     .route("/:id")
