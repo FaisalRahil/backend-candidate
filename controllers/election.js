@@ -17,13 +17,13 @@ exports.getElection = asyncHandler(async (req, res, next) => {
 
         next(
             new ErrorResponse(
-                `Election under this id ${req.body.electionID} is not found`,
+                `Election under this id ${req.body.electionID} was not found`,
                 404
             )
         )
 
     }
-    res.status(200).json({
+    return res.status(200).json({
         success: true,
         data: selectedElection
     })
@@ -51,9 +51,9 @@ exports.updateElection = asyncHandler(async (req, res, next) => {
     )
     if (!updatedElection) {
 
-        next(
+        return next(
             new ErrorResponse(
-                `Election under this id ${req.body.electionID} is not found`,
+                `Election under this id ${req.body.electionID} was not found`,
                 404
             )
         )
@@ -67,36 +67,36 @@ exports.updateElection = asyncHandler(async (req, res, next) => {
 
 exports.changeElectionStatus = asyncHandler(async (req, res, next) => {
 
-    
-        const updatedElection = await Election.findOneAndUpdate(
-            {
-                _id: req.body.electionID,
-            },
-            {
-                $set: { status: req.body.status }
-            },
-            {
-                new: true,
-                runValidators: true
-            }
+
+    const updatedElection = await Election.findOneAndUpdate(
+        {
+            _id: req.body.electionID,
+        },
+        {
+            $set: { status: req.body.status }
+        },
+        {
+            new: true,
+            runValidators: true
+        }
+    )
+
+    if (!updatedElection) {
+
+        return next(
+            new ErrorResponse(
+                `Election under this id ${req.body.electionID} was not found`,
+                404
+            )
         )
 
-        if (!updatedElection) {
+    }
+    res.status(200).json({
+        success: true,
+        data: updatedElection
+    })
 
-            return next(
-                new ErrorResponse(
-                    `Election under this id ${req.body.electionID} is not found`,
-                    404
-                )
-            )
 
-        }
-        res.status(200).json({
-            success: true,
-            data: updatedElection
-        })
-
-    
 
 })
 

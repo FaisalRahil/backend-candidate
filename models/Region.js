@@ -1,11 +1,7 @@
 const mongoose = require("mongoose");
 
 RegionSchema  = mongoose.Schema({
-    regionID:{
-        type:Number,
-        require:[true,""],
-        unique: true,
-    },
+   
     arabicName:{
         type:String,
         require:[true,""]
@@ -14,12 +10,23 @@ RegionSchema  = mongoose.Schema({
         type:String,
         require:[true,""]
     },
+    regionID:{
+        type:Number,
+        require:[true,""],
+    },
     electionID:{
         type:mongoose.Schema.Types.ObjectId,
-        unique: true,
+        require:[true,""]
+    },
+    status:{
+        type:Boolean,
+        default: true,
     },
     createdAt:{
         type:Date,
         default:Date.now
     }
 })
+
+
+module.exports = mongoose.model("Region", RegionSchema);

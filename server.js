@@ -22,11 +22,13 @@ app.use(express.json());
 // Route files
 const candidates = require("./routes/candidates");
 const election = require("./routes/election");
+const region = require('./routes/region')
 const courses = require("./routes/courses");
 
 // Mount routers
 app.use("/api/v1/candidates", candidates);
 app.use("/api/v1/election", election);
+app.use("/api/v1/region", region);
 app.use("/api/v1/courses", courses);
 
 app.use(errorHandler);
