@@ -36,7 +36,7 @@ exports.getRegion = asyncHandler(async (req, res, next) => {
 exports.getRegionsByElectionID = asyncHandler(async (req, res, next) => {
 
 
-    Election.aggregate([
+    let results = await Election.aggregate([
 
         {
             $match: { "_id": mongoose.Types.ObjectId(req.body.electionID), }
@@ -54,23 +54,21 @@ exports.getRegionsByElectionID = asyncHandler(async (req, res, next) => {
             $match: { "regions": { $ne: [] } }
         },
         
-    ]).exec(function (err, results) {
+    ])
 
-
-        if (!results || results.length === 0) {
-            return next(
-                new ErrorResponse(
-                    `Region under this election id ${req.body.electionID} was not found`,
-                    404
-                )
+    if (!results || results.length === 0) {
+        return next(
+            new ErrorResponse(
+                `Region under this election id ${req.body.electionID} was not found`,
+                404
             )
-        }
+        )
+    }
 
-        res.status(200).json({
-            success: true,
-            results:results[0]
-        })
-    });
+    res.status(200).json({
+        success: true,
+        results:results[0]
+    })
 
 })
 
