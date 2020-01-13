@@ -19,7 +19,7 @@ exports.getRegion = asyncHandler(async (req, res, next) => {
     if (!region) {
         return next(
             new ErrorResponse(
-                `No region under this id ${req.body.regionID} was not found`,
+                `Region under this id ${req.body.regionID} was not found`,
                 404
             )
         )
@@ -27,7 +27,7 @@ exports.getRegion = asyncHandler(async (req, res, next) => {
 
     res.status(200).json({
         success: true,
-        region
+        data:region
     })
 
 })
@@ -67,7 +67,7 @@ exports.getRegionsByElectionID = asyncHandler(async (req, res, next) => {
 
     res.status(200).json({
         success: true,
-        results:results[0]
+        data:results[0]
     })
 
 })
@@ -86,7 +86,7 @@ exports.createRegion = asyncHandler(async (req, res, next) => {
 
 
 exports.updateRegion = asyncHandler(async (req, res, next) => {
-    const updatedRegion = await Region.findOneAndUpdate(
+    const updatedRegion = await Region.findByIdAndUpdate(
         req.body.id,
         req.body,
         {
@@ -98,7 +98,7 @@ exports.updateRegion = asyncHandler(async (req, res, next) => {
 
         return next(
             new ErrorResponse(
-                `Region under this id ${req.body.regionID} was not found`,
+                `Region under this id ${req.body.id} was not found`,
                 404
             )
         )
@@ -111,7 +111,7 @@ exports.updateRegion = asyncHandler(async (req, res, next) => {
 })
 
 exports.changeRegionStatus = asyncHandler(async (req, res, next) => {
-    const updatedRegion = await Region.findOneAndUpdate(
+    const updatedRegion = await Region.findByIdAndUpdate(
         {
             _id: req.body.regionID,
         },

@@ -68,7 +68,7 @@ exports.updateElection = asyncHandler(async (req, res, next) => {
 exports.changeElectionStatus = asyncHandler(async (req, res, next) => {
 
 
-    const updatedElection = await Election.findOneAndUpdate(
+    const updatedElection = await Election.findByIdAndUpdate(
         {
             _id: req.body.electionID,
         },
