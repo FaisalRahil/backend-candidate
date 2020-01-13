@@ -11,8 +11,12 @@ let app = require("../../../server")
 
 describe('region route test', () => {
 
+    
     let regionID = undefined
+    let regionResponse = undefined
     let electionID = undefined
+
+    
 
     before(async () => {
 
@@ -26,40 +30,59 @@ describe('region route test', () => {
             .post('/api/v1/election/')
             .send(newElection)
 
+       
+        
         electionID = response.body.data._id
+     
 
     })
 
+    
 
-    it('shoud create a new region', async () => {
+    const createNewRegion = async (newRegion) => {
 
-        let newRegion = {
-
-            arabicName: "المنطقة الغربية",
-            englishName: "Western region",
-            regionID: Math.floor((Math.random() * 100000000) + 1),
-            electionID
-
-        }
-
+       
+        
         let response = await request(app)
             .post('/api/v1/region/')
             .send(newRegion)
             .expect(201)
             .expect('Content-Type', /json/)
 
+            
 
-        regionID = response.body.data._id
+          regionID = response.body.data._id
 
-        expect(response.status).to.equal(201)
-        expect(response.body.success).to.be.true
-        expect(response.body.data).to.be.not.undefined
-        expect(response.body.data).to.be.not.null
-        expect(response.body.data.arabicName).to.be.eql(newRegion.arabicName)
-        expect(response.body.data.englishName).to.be.eql(newRegion.englishName)
-        expect(response.body.data.regionID).to.be.eql(newRegion.regionID)
-        expect(response.body.data.electionID).to.be.eql(newRegion.electionID)
-        response.body.data.should.include.keys(["arabicName", "englishName", "regionID","electionID", "status"]);
+
+          return response
+
+    }
+
+
+    it('shoud create a new region', async () => {
+        const newRegion = {
+
+            arabicName: "المنطقة الغربية",
+            englishName: "Western region",
+            regionID: Math.floor((Math.random() * 100000000) + 1),
+            electionID
+    
+        }
+        
+        regionResponse = await createNewRegion(newRegion)
+        
+
+        expect(regionResponse.status).to.equal(201)
+        expect(regionResponse.body).to.not.be.null;
+        expect(regionResponse.body).to.not.be.undefined;
+        expect(regionResponse.body.success).to.be.true
+        expect(regionResponse.body.data).to.be.not.undefined
+        expect(regionResponse.body.data).to.be.not.null
+        expect(regionResponse.body.data.arabicName).to.be.eql(newRegion.arabicName)
+        expect(regionResponse.body.data.englishName).to.be.eql(newRegion.englishName)
+        expect(regionResponse.body.data.regionID).to.be.eql(newRegion.regionID)
+        expect(regionResponse.body.data.electionID).to.be.eql(newRegion.electionID)
+        regionResponse.body.data.should.include.keys(["arabicName", "englishName", "regionID","electionID", "status"]);
 
     })
 
@@ -283,9 +306,6 @@ describe('region route test', () => {
             .send({ electionID: "5e1bb5e507516221677406d3" })
             .expect(404)
             .expect('Content-Type', /json/)
-
-
-
 
         expect(response.status).to.equal(404)
         expect(response.body.error).to.not.be.null;

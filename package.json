@@ -7,6 +7,7 @@
     "start": "NODE_ENV=production node server",
     "dev": "nodemon server",
     "test": "NODE_ENV=test mocha tests/**/**/*.test.js",
+    "electionTest": "NODE_ENV=test mocha tests/**/**/election.test.js",
     "regionTest": "NODE_ENV=test mocha tests/**/**/region.test.js"
   },
   "repository": {
