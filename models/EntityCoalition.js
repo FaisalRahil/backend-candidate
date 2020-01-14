@@ -14,7 +14,7 @@ const EntityCoalitionSchema = mongoose.Schema({
         type:[mongoose.Schema.Types.ObjectId],
         unique: true,
     },
-    status:{
+    state:{
         type:Boolean,
         default: true,
     },

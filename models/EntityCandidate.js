@@ -57,7 +57,7 @@ const EntityCandidateSchema = mongoose.Schema({
         required: [true, ''],
         unique: true,
     },
-    status: {
+    state: {
         type: Boolean,
         default: true
     },
@@ -78,7 +78,7 @@ const EntityCandidateSchema = mongoose.Schema({
             type: mongoose.Schema.Types.ObjectId,
             required: [true, '']
         },
-        status: {
+        state: {
             type: Boolean,
             default: false
         }

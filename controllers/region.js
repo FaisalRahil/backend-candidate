@@ -5,6 +5,17 @@ const asyncHandler = require("../middleware/async");
 const Region = require("../models/Region");
 const Election = require("../models/Election");
 
+exports.createRegion = asyncHandler(async (req, res, next) => {
+
+    const newRegion = await Region.create(req.body)
+
+    res.status(201).json({
+        success: true,
+        data: newRegion
+    })
+
+})
+
 exports.getRegions = asyncHandler(async (req, res, next) => {
 
     const regions = await Region.find()
@@ -73,18 +84,6 @@ exports.getRegionsByElectionID = asyncHandler(async (req, res, next) => {
 })
 
 
-exports.createRegion = asyncHandler(async (req, res, next) => {
-
-    const createdRegion = await Region.create(req.body)
-
-    res.status(201).json({
-        success: true,
-        data: createdRegion
-    })
-
-})
-
-
 exports.updateRegion = asyncHandler(async (req, res, next) => {
     const updatedRegion = await Region.findByIdAndUpdate(
         req.body.id,
@@ -110,13 +109,13 @@ exports.updateRegion = asyncHandler(async (req, res, next) => {
     })
 })
 
-exports.changeRegionStatus = asyncHandler(async (req, res, next) => {
+exports.toggleRegionState = asyncHandler(async (req, res, next) => {
     const updatedRegion = await Region.findByIdAndUpdate(
         {
             _id: req.body.regionID,
         },
         {
-            $set: { status: req.body.status }
+            $set: { state: req.body.state }
         },
         {
             new: true,

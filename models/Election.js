@@ -18,7 +18,7 @@ const ElectionSchema = mongoose.Schema({
         ],
         required: [true, '']
     },
-    status:{
+    state:{
        type:Boolean,
        default:true
     },

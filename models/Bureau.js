@@ -1,17 +1,29 @@
 const mongoose = require('mongoose')
 
 const BureauSchema = mongoose.Schema({
-    bureauID:{
+    bureauID: {
+        type: Number,
+        required: [true, ""]
+    },
+    arabicName: {
+        type: String,
+        required: [true, ""]
+    },
+    englishName: {
+        type: String,
+        required: [true, ""]
+    },
+    electionID: {
         type: mongoose.Schema.Types.ObjectId,
         required: [true, ""]
     },
-    arabicName:{
-        type:String,
-        required:[true,""]
+    regionID: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: [true, ""]
     },
-    englishName:{
-        type:String,
-        required:[true,""]
+    state: {
+        type: Boolean,
+        default: true
     },
     createdAt: {
         type: Date,
@@ -19,3 +31,5 @@ const BureauSchema = mongoose.Schema({
     }
 
 })
+
+module.exports = mongoose.model("Bureau", BureauSchema)

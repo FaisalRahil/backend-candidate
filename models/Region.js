@@ -18,7 +18,7 @@ RegionSchema  = mongoose.Schema({
         type:mongoose.Schema.Types.ObjectId,
         require:[true,""]
     },
-    status:{
+    state:{
         type:Boolean,
         default: true,
     },

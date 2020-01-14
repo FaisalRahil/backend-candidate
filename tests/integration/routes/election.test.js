@@ -165,11 +165,11 @@ describe('election route test', () => {
 
         const deactivateElection = {
             electionID: `${electionID}`,
-            status: false
+            state: false
         }
 
         const response = await request(app)
-            .put('/api/v1/election/changeElectionStatus')
+            .put('/api/v1/election/toggleElectionState')
             .send(deactivateElection)
             .expect(200)
             .expect('Content-Type', /json/)
@@ -179,7 +179,7 @@ describe('election route test', () => {
         expect(response.status, colors.blue('status should be 200')).to.equal(200)
         expect(response.body).to.not.be.null;
         expect(response.body).to.not.be.undefined;
-        expect(response.body.data.status).to.be.false;
+        expect(response.body.data.state).to.be.false;
         expect(response.body.success).to.be.true;
         expect(response.body.data).to.not.be.null;
         expect(response.body.data).to.not.be.undefined;
@@ -192,21 +192,22 @@ describe('election route test', () => {
 
         const deactivateElection = {
             electionID: `${electionID}`,
-            status: true
+            state: true
         }
 
         const response = await request(app)
-            .put('/api/v1/election/changeElectionStatus')
+            .put('/api/v1/election/toggleElectionState')
             .send(deactivateElection)
             .expect(200)
             .expect('Content-Type', /json/)
 
 
+            console.error(response.body.data)
 
         expect(response.status, colors.blue('status should be 200')).to.equal(200)
         expect(response.body).to.not.be.null;
         expect(response.body).to.not.be.undefined;
-        expect(response.body.data.status).to.be.true;
+        expect(response.body.data.state).to.be.true;
         expect(response.body.success).to.be.true;
         expect(response.body.data).to.not.be.null;
         expect(response.body.data).to.not.be.undefined;
@@ -215,15 +216,15 @@ describe('election route test', () => {
 
     })
 
-    it("should not change non-existing Election\'s status", async () => {
+    it("should not change non-existing Election\'s state", async () => {
 
         const deactivateElection = {
             electionID: '5e195075705b65d4a1c52fb4',
-            status: false
+            state: false
         }
 
         const response = await request(app)
-            .put('/api/v1/election/changeElectionStatus')
+            .put('/api/v1/election/toggleElectionState')
             .send(deactivateElection)
             .expect(404)
             .expect('Content-Type', /json/)

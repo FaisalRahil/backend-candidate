@@ -46,7 +46,7 @@ const EntitySchema = mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         required: [true, '']
     },
-    status: {
+    state: {
         type: Boolean,
         default: true
     },

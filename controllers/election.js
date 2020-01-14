@@ -65,7 +65,7 @@ exports.updateElection = asyncHandler(async (req, res, next) => {
     })
 })
 
-exports.changeElectionStatus = asyncHandler(async (req, res, next) => {
+exports.toggleElectionState = asyncHandler(async (req, res, next) => {
 
 
     const updatedElection = await Election.findByIdAndUpdate(
@@ -73,7 +73,7 @@ exports.changeElectionStatus = asyncHandler(async (req, res, next) => {
             _id: req.body.electionID,
         },
         {
-            $set: { status: req.body.status }
+            $set: { state: req.body.state }
         },
         {
             new: true,

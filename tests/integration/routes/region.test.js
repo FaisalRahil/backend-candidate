@@ -82,7 +82,7 @@ describe('region route test', () => {
         expect(regionResponse.body.data.englishName).to.be.eql(newRegion.englishName)
         expect(regionResponse.body.data.regionID).to.be.eql(newRegion.regionID)
         expect(regionResponse.body.data.electionID).to.be.eql(newRegion.electionID)
-        regionResponse.body.data.should.include.keys(["arabicName", "englishName", "regionID","electionID", "status"]);
+        regionResponse.body.data.should.include.keys(["arabicName", "englishName", "regionID","electionID", "state"]);
 
     })
 
@@ -99,7 +99,7 @@ describe('region route test', () => {
         expect(response.body.success).to.be.true
         expect(response.body.data).to.be.not.undefined
         expect(response.body.data).to.be.not.null
-        response.body.data.should.include.keys(["arabicName", "englishName", "regionID","electionID", "status"]);
+        response.body.data.should.include.keys(["arabicName", "englishName", "regionID","electionID", "state"]);
 
 
     })
@@ -147,7 +147,7 @@ describe('region route test', () => {
         expect(response.body.data._id).to.be.eql(updatedRegion.id)
         expect(response.body.data.arabicName).to.be.eql(updatedRegion.arabicName)
         expect(response.body.data.englishName).to.be.eql(updatedRegion.englishName)
-        response.body.data.should.include.keys(["arabicName", "englishName", "regionID","electionID", "status"]);
+        response.body.data.should.include.keys(["arabicName", "englishName", "regionID","electionID", "state"]);
 
     })
 
@@ -182,11 +182,11 @@ describe('region route test', () => {
 
         const deactivateRegion = {
             regionID,
-            status: false
+            state: false
         }
 
         const response = await request(app)
-            .put('/api/v1/region/changeRegionStatus')
+            .put('/api/v1/region/toggleRegionState')
             .send(deactivateRegion)
             .expect(200)
             .expect('Content-Type', /json/)
@@ -194,11 +194,11 @@ describe('region route test', () => {
 
 
         expect(response.status).to.equal(200)
-        expect(response.body.data.status).to.be.false;
+        expect(response.body.data.state).to.be.false;
         expect(response.body.success).to.be.true;
         expect(response.body.data).to.not.be.null;
         expect(response.body.data).to.not.be.undefined;
-        expect(response.body.data.status).to.be.eql(deactivateRegion.status)
+        expect(response.body.data.state).to.be.eql(deactivateRegion.state)
 
 
 
@@ -209,22 +209,22 @@ describe('region route test', () => {
 
         const activateRegion = {
             regionID,
-            status: true
+            state: true
         }
 
         const response = await request(app)
-            .put('/api/v1/region/changeRegionStatus')
+            .put('/api/v1/region/toggleRegionState')
             .send(activateRegion)
             .expect(200)
             .expect('Content-Type', /json/)
 
 
         expect(response.status).to.equal(200)
-        expect(response.body.data.status).to.be.true;
+        expect(response.body.data.state).to.be.true;
         expect(response.body.success).to.be.true;
         expect(response.body.data).to.not.be.null;
         expect(response.body.data).to.not.be.undefined;
-        expect(response.body.data.status).to.be.eql(activateRegion.status)
+        expect(response.body.data.state).to.be.eql(activateRegion.state)
  
 
 
@@ -232,15 +232,15 @@ describe('region route test', () => {
 
     })
 
-    it("should not change non-existing Region\'s status", async () => {
+    it("should not change non-existing Region\'s state", async () => {
 
         const deactivateRegion = {
             regionID: '5e1bb5e507516221677406d3',
-            status: false
+            state: false
         }
 
         const response = await request(app)
-            .put('/api/v1/region/changeRegionStatus')
+            .put('/api/v1/region/toggleRegionState')
             .send(deactivateRegion)
             .expect(404)
             .expect('Content-Type', /json/)
