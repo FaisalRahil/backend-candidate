@@ -64,34 +64,6 @@ exports.getBureausByRegionID = asyncHandler(async (req, res, next) => {
         },
         {
             $match: { "bureaus": { $ne: [] } }
-        },
-        { $unwind: "$bureaus" },
-        {
-            $group: {
-
-                _id: "$_id",
-                regionArabicName: { "$first": "$arabicName" },
-                regioneEnglishName: { "$first": "$englishName" },
-                arabicName: { "$first": "$bureaus.arabicName" },
-                englishName: { "$first": "$bureaus.englishName" }
-
-            }
-        },
-        {
-            $mergeObjects: {
-
-                
-            }
-        },
-        {
-
-            $project: {
-                regionArabicName: "$arabicName",
-                regioneEnglishName: "$englishName",
-
-                arabicName: "$regionArabicName",
-                englishName: "$regioneEnglishName",
-            }
         }
 
     ])
@@ -99,7 +71,7 @@ exports.getBureausByRegionID = asyncHandler(async (req, res, next) => {
     if (!results || results.length === 0) {
         return next(
             new ErrorResponse(
-                `Region under this election id ${req.body.electionID} was not found`,
+                `Region under this region id ${req.body.regionID} was not found`,
                 404
             )
         )
@@ -112,8 +84,48 @@ exports.getBureausByRegionID = asyncHandler(async (req, res, next) => {
 
 })
 
-exports.getBureausByRegionIDAndElectionID = asyncHandler(async (req, res, next) => {
+exports.getBureausInfoWithRegionAndElection = asyncHandler(async (req, res, next) => {
+    let results = await Region.aggregate([
 
+        {
+            $match: { "_id": mongoose.Types.ObjectId(req.body.regionID), }
+        },
+        {
+            $lookup: {
+                from: "elections",
+                localField: "electionID",
+                foreignField: "_id",
+                as: "elections"
+            }
+        },
+        { $unwind: "$elections" },
+        {
+            $lookup: {
+                from: "bureaus",
+                localField: "_id",
+                foreignField: "regionID",
+                as: "bureaus"
+            }
+        },
+        {
+            $match: { "bureaus": { $ne: [] } }
+        }
+
+    ])
+
+    if (!results || results.length === 0) {
+        return next(
+            new ErrorResponse(
+                `Region under this id ${req.body.regionID} or Election under this id ${req.body.electionID} was not found`,
+                404
+            )
+        )
+    }
+
+    res.status(200).json({
+        success: true,
+        data: results
+    })
 })
 
 

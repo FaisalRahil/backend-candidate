@@ -83,7 +83,7 @@ exports.getRegionsByElectionID = asyncHandler(async (req, res, next) => {
 
 })
 
-
+// Joining three collection
 exports.updateRegion = asyncHandler(async (req, res, next) => {
     const updatedRegion = await Region.findByIdAndUpdate(
         req.body.id,
