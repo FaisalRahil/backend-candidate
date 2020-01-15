@@ -142,7 +142,7 @@ exports.updateBureau = asyncHandler(async (req, res, next) => {
     if (!updatedBureau) {
         return next(
             new ErrorResponse(
-                `Bureau under this id ${req.body.bureauID} was not found`,
+                `Bureau under this id ${req.body.id} was not found`,
                 404
             )
         )
