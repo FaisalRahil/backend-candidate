@@ -280,9 +280,6 @@ describe('region route test', () => {
             .expect(200)
             .expect('Content-Type', /json/)
 
-
-
-
         expect(response.status).to.equal(200)
         expect(response.body.data).to.not.be.null;
         expect(response.body.data).to.not.be.undefined;
@@ -293,9 +290,6 @@ describe('region route test', () => {
         expect(response.body.data.regions[0]).to.be.an('object')
         response.body.data.should.include.keys(["startDate", "endDate", "electionType"]);
         response.body.data.regions[0].should.include.keys(["arabicName", "englishName", "electionID", "regionID"]);
-
-
-
 
     })
 

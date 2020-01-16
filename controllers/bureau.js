@@ -41,9 +41,9 @@ exports.getBureau = asyncHandler(async (req, res, next) => {
 
 
 exports.getBureaus = asyncHandler(async (req, res, next) => {
-    const bureau = await Bureau.find()
+    const bureaus = await Bureau.find()
 
-    return res.status(200).json(bureau)
+    return res.status(200).json({bureaus})
 })
 
 exports.getBureausByRegionID = asyncHandler(async (req, res, next) => {
@@ -71,7 +71,7 @@ exports.getBureausByRegionID = asyncHandler(async (req, res, next) => {
     if (!results || results.length === 0) {
         return next(
             new ErrorResponse(
-                `Region under this region id ${req.body.regionID} was not found`,
+                `Region under this id ${req.body.regionID} was not found`,
                 404
             )
         )
@@ -79,7 +79,7 @@ exports.getBureausByRegionID = asyncHandler(async (req, res, next) => {
 
     res.status(200).json({
         success: true,
-        data: results
+        data: results[0]
     })
 
 })
@@ -95,10 +95,10 @@ exports.getBureausInfoWithRegionAndElection = asyncHandler(async (req, res, next
                 from: "elections",
                 localField: "electionID",
                 foreignField: "_id",
-                as: "elections"
+                as: "election"
             }
         },
-        { $unwind: "$elections" },
+        { $unwind: "$election" },
         {
             $lookup: {
                 from: "bureaus",
@@ -116,7 +116,7 @@ exports.getBureausInfoWithRegionAndElection = asyncHandler(async (req, res, next
     if (!results || results.length === 0) {
         return next(
             new ErrorResponse(
-                `Region under this id ${req.body.regionID} or Election under this id ${req.body.electionID} was not found`,
+                `Region under this id ${req.body.regionID} was not found`,
                 404
             )
         )
@@ -124,7 +124,7 @@ exports.getBureausInfoWithRegionAndElection = asyncHandler(async (req, res, next
 
     res.status(200).json({
         success: true,
-        data: results
+        data: results[0]
     })
 })
 

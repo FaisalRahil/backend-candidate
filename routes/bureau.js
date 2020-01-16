@@ -6,7 +6,7 @@ const {getBureau, createBureau, updateBureau, getBureaus, changeBureauState, get
 router.route('/').get(getBureau).post(createBureau).put(updateBureau)
 router.route('/bureaus').get(getBureaus)
 router.route('/toggleBureauState').put(changeBureauState)
-router.route('/bureausByRegions').get(getBureausByRegionID)
+router.route('/bureausByRegion').get(getBureausByRegionID)
 router.route('/bureausWithRegionsAndElections').get(getBureausInfoWithRegionAndElection)
 
 module.exports = router;

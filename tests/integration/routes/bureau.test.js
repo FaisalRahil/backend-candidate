@@ -9,7 +9,34 @@ const app = require("../../../server");
 describe('bureau route test', () => {
 
     let bureauID = undefined
-    before(() => {
+    let regionID = undefined
+    let electionID = undefined
+    let regionResponse = undefined
+    let electionResponse = undefined
+
+
+    before(async () => {
+
+        const newElection = {
+            startDate: '2016-04-13',
+            endDate: '2016-04-14',
+            electionType: 'Parliament Election',
+        }
+
+        const createElectionRequest = await request(app).post('/api/v1/election/').send(newElection)
+        electionID = createElectionRequest.body.data._id
+
+        const newRegion = {
+
+            arabicName: "المنطقة الغربية",
+            englishName: "Western region",
+            regionID: Math.floor((Math.random() * 100000000) + 1),
+            electionID
+
+        }
+
+        const createRegionRequest = await request(app).post('/api/v1/region/').send(newRegion)
+        regionID = createRegionRequest.body.data._id
 
     })
 
@@ -18,8 +45,8 @@ describe('bureau route test', () => {
             bureauID: Math.floor((Math.random() * 100000000) + 1),
             arabicName: "مكتب طرابلس المركز",
             englishName: "Tripoli Central Bureau",
-            electionID: "5e1cb508443646390387cda5",
-            regionID: "5e1cc5d490423e3b92b0b1c6",
+            electionID: electionID,
+            regionID: regionID,
 
         }
 
@@ -28,7 +55,6 @@ describe('bureau route test', () => {
             .send(newBureau)
             .expect(201)
             .expect('Content-Type', /json/)
-        console.error(response.body)
 
         bureauID = response.body.data._id;
 
@@ -43,7 +69,7 @@ describe('bureau route test', () => {
         expect(response.body.data.bureauID).to.be.eql(newBureau.bureauID)
         expect(response.body.data.bureauID).to.be.eql(newBureau.bureauID)
         expect(response.body.data.electionID).to.be.eql(newBureau.electionID)
-        response.body.data.should.include.keys(["arabicName", "englishName", "bureauID", "bureauID", "electionID", "state"]);
+        response.body.data.should.include.keys(["arabicName", "englishName", "bureauID", "electionID", "state"]);
 
     })
 
@@ -190,10 +216,6 @@ describe('bureau route test', () => {
         expect(response.body.data).to.not.be.undefined;
         expect(response.body.data.state).to.be.eql(activateBureau.state)
 
-
-
-
-
     })
 
     it("should not change non-existing Bureau\'s state", async () => {
@@ -219,5 +241,99 @@ describe('bureau route test', () => {
 
     })
 
+    it('should return list of bureaus ', async () => {
+
+        const response = await request(app)
+            .get('/api/v1/bureau/bureaus')
+            .expect(200)
+            .expect('Content-Type', /json/)
+
+        expect(response.status).to.equal(200)
+        expect(response.body.bureaus).to.be.not.empty
+        expect(response.body.bureaus).to.be.an('array')
+        expect(response.body.bureaus[0]).to.be.an('object')
+        expect(response.body.bureaus).to.not.be.null;
+        expect(response.body.bureaus).to.not.be.undefined;
+
+    })
+
+
+    it('should return list of bureaus based on selected region', async () => {
+
+        const response = await request(app)
+            .get('/api/v1/bureau/bureausByRegion')
+            .send({ regionID })
+            .expect(200)
+            .expect('Content-Type', /json/)
+
+        expect(response.status).to.equal(200)
+        expect(response.body.success).to.be.true;
+        expect(response.body.success).to.be.a("boolean");
+        expect(response.body.data).to.not.be.null;
+        expect(response.body.data).to.not.be.undefined;
+        expect(response.body.data).to.be.an("object")
+        response.body.data.should.include.keys(["arabicName", "englishName", "electionID", "regionID", "state"]);
+        expect(response.body.data.bureaus).to.be.not.empty;
+        expect(response.body.data.bureaus).to.be.an('array')
+        expect(response.body.data.bureaus[0]).to.be.an('object')
+        response.body.data.bureaus[0].should.include.keys(["arabicName", "englishName", "bureauID", "electionID", "regionID", "state"]);
+    })
+
+    it('should not return list of bureaus based on non-existing region', async () => {
+
+        const response = await request(app)
+            .get('/api/v1/bureau/bureausByRegion')
+            .send({regionID: "5e1bb5e507516221677406d3"})
+            .expect(404)
+            .expect('Content-Type', /json/)
+
+        expect(response.status).to.equal(404)
+        expect(response.body.success).to.be.false;
+        expect(response.body.success).to.be.a("boolean");
+        expect(response.body.error).to.equal("Region under this id 5e1bb5e507516221677406d3 was not found")
+        expect(response.body.error).to.be.a("string");
+        
+    })
+
+    it('should return list of bureaus and election info based on selected region', async () => {
+
+        const response = await request(app)
+            .get('/api/v1/bureau/bureausWithRegionsAndElections')
+            .send({ regionID })
+            .expect(200)
+            .expect('Content-Type', /json/)
+
+            expect(response.status).to.equal(200)
+            expect(response.body.success).to.be.true;
+            expect(response.body.success).to.be.a("boolean");
+            expect(response.body.data).to.not.be.null;
+            expect(response.body.data).to.not.be.undefined;
+            expect(response.body.data).to.be.an("object")
+            response.body.data.should.include.keys(["arabicName", "englishName", "electionID", "regionID", "state"]);
+            expect(response.body.data.election).to.be.not.null;
+            expect(response.body.data.election).to.be.not.undefined;
+            expect(response.body.data.election).to.be.an('object')
+            response.body.data.election.should.include.keys(["startDate", "endDate", "electionType", "state"]);
+            expect(response.body.data.bureaus).to.be.not.empty;
+            expect(response.body.data.bureaus).to.be.an('array')
+            expect(response.body.data.bureaus[0]).to.be.an('object')
+            response.body.data.bureaus[0].should.include.keys(["arabicName", "englishName", "bureauID", "electionID", "regionID", "state"]);
+
+    })
+
+    it('should not return list of bureaus and election info based on non-existing region', async () => {
+
+        const response = await request(app)
+            .get('/api/v1/bureau/bureausWithRegionsAndElections')
+            .send({regionID: "5e1bb5e507516221677406d3"})
+            .expect(404)
+            .expect('Content-Type', /json/)
+
+            expect(response.status).to.equal(404)
+            expect(response.body.success).to.be.false;
+            expect(response.body.success).to.be.a("boolean");
+            expect(response.body.error).to.equal("Region under this id 5e1bb5e507516221677406d3 was not found")
+            expect(response.body.error).to.be.a("string");
+    })
 
 })

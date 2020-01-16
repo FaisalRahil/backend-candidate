@@ -63,7 +63,7 @@ exports.getRegionsByElectionID = asyncHandler(async (req, res, next) => {
         },
         {
             $match: { "regions": { $ne: [] } }
-        },
+        }
         
     ])
 
