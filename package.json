@@ -9,7 +9,8 @@
     "test": "NODE_ENV=test mocha tests/**/**/*.test.js",
     "electionTest": "NODE_ENV=test mocha tests/**/**/election.test.js",
     "regionTest": "NODE_ENV=test mocha tests/**/**/region.test.js",
-    "bureauTest": "NODE_ENV=test mocha tests/**/**/bureau.test.js"
+    "bureauTest": "NODE_ENV=test mocha tests/**/**/bureau.test.js",
+    "constituencyTest": "NODE_ENV=test mocha tests/**/**/constituency.test.js"
   },
   "repository": {
     "type": "git",

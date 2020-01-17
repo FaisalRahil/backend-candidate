@@ -22,12 +22,12 @@ exports.createConstituency = asyncHandler(async (req, res, next) => {
 
 exports.getConstituency = asyncHandler(async (req, res, next) => {
 
-    const consistuency = await Constituency.findOne({ $or: [{ _id: req.body.id }, { constituencyID: req.body.constituencyID }] }).select({_id:0,regionID:0,electionID:0,bureauID:0,createdAt:0, __v:0})
+    const consistuency = await Constituency.findOne({ $or: [{ _id: req.body.id }, { constituencyID: req.body.constituencyID }] }).select({regionID:0,electionID:0,bureauID:0,createdAt:0, __v:0})
 
     if (!consistuency) {
         return next(
             new ErrorResponse(
-                `Constituency under this id ${req.body.constituencyID} was not found`,
+                `Constituency under this id ${req.body.id ? req.body.id : req.body.constituencyID} was not found`,
                 404
             )
         )
@@ -40,8 +40,8 @@ exports.getConstituency = asyncHandler(async (req, res, next) => {
 
 exports.getConstituencies = asyncHandler(async (req, res, next) => {
 
-    const consistuencies = await Constituency.find().select({_id:0,regionID:0,electionID:0,bureauID:0,createdAt:0, __v:0}).sort({createdAt:-1})
-    res.status(200).json({ consistuencies })
+    const constituencies = await Constituency.find().select({_id:0,regionID:0,electionID:0,bureauID:0,createdAt:0, __v:0}).sort({createdAt:-1})
+    res.status(200).json({ constituencies })
 })
 
 exports.getConstituenciesBasedOnElectionID = asyncHandler(async (req, res, next) => {
@@ -250,7 +250,7 @@ exports.updateConsistuency = asyncHandler(async (req, res, next) => {
     if (!updatedConstituency) {
         return next(
             new ErrorResponse(
-                `Constituency under this id ${req.body.id} was not found`,
+                `Constituency under this id ${req.body.id ? req.body.id : req.body.constituencyID} was not found`,
                 404
             )
         )
@@ -281,7 +281,7 @@ exports.toggleConstituencyState = asyncHandler(async (req, res, next) => {
 
         return next(
             new ErrorResponse(
-                `Constituency under this id ${req.body.constituencyID} was not found`,
+                `Constituency under this id ${req.body.constituencyID ? req.body.constituencyID : req.body.id} was not found`,
                 404
             )
         )
