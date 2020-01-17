@@ -22,7 +22,7 @@ exports.createConstituency = asyncHandler(async (req, res, next) => {
 
 exports.getConstituency = asyncHandler(async (req, res, next) => {
 
-    const consistuency = await Constituency.findOne({ $or: [{ _id: req.body.id }, { constituencyID: req.body.constituencyID }] })
+    const consistuency = await Constituency.findOne({ $or: [{ _id: req.body.id }, { constituencyID: req.body.constituencyID }] }).select({_id:0,regionID:0,electionID:0,bureauID:0,createdAt:0, __v:0})
 
     if (!consistuency) {
         return next(
@@ -40,12 +40,12 @@ exports.getConstituency = asyncHandler(async (req, res, next) => {
 
 exports.getConstituencies = asyncHandler(async (req, res, next) => {
 
-    const consistuencies = await Constituency.find()
+    const consistuencies = await Constituency.find().select({_id:0,regionID:0,electionID:0,bureauID:0,createdAt:0, __v:0}).sort({createdAt:-1})
     res.status(200).json({ consistuencies })
 })
 
 exports.getConstituenciesBasedOnElectionID = asyncHandler(async (req, res, next) => {
-
+console.error(req.body)
     let results = await Election.aggregate([
 
         {
@@ -96,7 +96,7 @@ exports.getConstituenciesBasedOnElectionID = asyncHandler(async (req, res, next)
     if (!results || results.length === 0) {
         return next(
             new ErrorResponse(
-                `Region under this id ${req.body.regionID} was not found`,
+                `Election under this id ${req.body.electionID} was not found`,
                 404
             )
         )

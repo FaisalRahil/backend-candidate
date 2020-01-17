@@ -17,14 +17,16 @@ const ConstituencySchema  = mongoose.Schema({
     regionID:{
         type:mongoose.Schema.Types.ObjectId,
         required:[true, "الرجاء إدخال رقم التعريف"],
+        unique: false
     },
     bureauID:{
         type:mongoose.Schema.Types.ObjectId,
         required:[true, "الرجاء إدخال رقم التعريف"],
+        unique: false
     },
     electionID:{
         type:mongoose.Schema.Types.ObjectId,
-        required:[true, "الرجاء إدخال رقم التعريف"],
+        required:[true, "الرجاء إدخال رقم التعريف"]
     },
     state:{
         type:Boolean,
