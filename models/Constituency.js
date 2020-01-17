@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 
 const ConstituencySchema  = mongoose.Schema({
     constituencyID:{
-        type:String,
+        type:Number,
         required:[true, "الرجاء إدخال رقم التعريف"],
     },
     arabicName:{
@@ -14,16 +14,26 @@ const ConstituencySchema  = mongoose.Schema({
         type:String,
         required:[true, "الرجاء إدخال رقم التعريف"],
     },
-    region:{
+    regionID:{
+        type:mongoose.Schema.Types.ObjectId,
+        required:[true, "الرجاء إدخال رقم التعريف"],
+    },
+    bureauID:{
         type:mongoose.Schema.Types.ObjectId,
         required:[true, "الرجاء إدخال رقم التعريف"],
     },
     electionID:{
         type:mongoose.Schema.Types.ObjectId,
-        unique: true,
+        required:[true, "الرجاء إدخال رقم التعريف"],
+    },
+    state:{
+        type:Boolean,
+        default:true
     },
     createdAt: {
         type: Date,
         default: Date.now
     }
 })
+
+module.exports = mongoose.model('Constituency',ConstituencySchema)

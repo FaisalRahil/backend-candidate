@@ -11,9 +11,6 @@ describe('bureau route test', () => {
     let bureauID = undefined
     let regionID = undefined
     let electionID = undefined
-    let regionResponse = undefined
-    let electionResponse = undefined
-
 
     before(async () => {
 
