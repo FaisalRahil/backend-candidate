@@ -4,7 +4,6 @@ const ErrorResponse = require("../utils/errorResponse");
 const asyncHandler = require("../middleware/async");
 const Bureau = require('../models/Bureau')
 const Region = require("../models/Region");
-const Election = require("../models/Election");
 
 
 
