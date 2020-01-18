@@ -277,7 +277,7 @@ describe('bureau route test', () => {
 
         const response = await request(app)
             .get('/api/v1/bureau/bureausByRegion')
-            .send({ regionID: "5e1bb5e507516221677406d3" })
+            .send({regionID: "5e1bb5e507516221677406d3"})
             .expect(404)
             .expect('Content-Type', /json/)
 

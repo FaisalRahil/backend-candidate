@@ -6,7 +6,7 @@ const SubconstituencySchema  = mongoose.Schema({
     subconstituencyID: {
         type: Number,
         require: [true, ""],
-        unique: true,
+        index: true,
     },
     consistuency: {
         type: mongoose.Schema.Types.ObjectId,

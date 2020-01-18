@@ -5,6 +5,7 @@ const ConstituencySchema  = mongoose.Schema({
     constituencyID:{
         type:Number,
         required:[true, "الرجاء إدخال رقم التعريف"],
+        index:true
     },
     arabicName:{
         type:String,

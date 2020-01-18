@@ -13,6 +13,7 @@ RegionSchema  = mongoose.Schema({
     regionID:{
         type:Number,
         require:[true,""],
+        unique:true
     },
     electionID:{
         type:mongoose.Schema.Types.ObjectId,

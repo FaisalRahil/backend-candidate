@@ -40,7 +40,7 @@ exports.getConstituency = asyncHandler(async (req, res, next) => {
 
 exports.getConstituencies = asyncHandler(async (req, res, next) => {
 
-    const constituencies = await Constituency.find().select({_id:0,regionID:0,electionID:0,bureauID:0,createdAt:0, __v:0}).sort({createdAt:-1})
+    const constituencies = await Constituency.find().select({regionID:0,electionID:0,bureauID:0,createdAt:0, __v:0}).sort({createdAt:-1})
     res.status(200).json({ constituencies })
 })
 

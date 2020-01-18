@@ -3,7 +3,8 @@ const mongoose = require('mongoose')
 const BureauSchema = mongoose.Schema({
     bureauID: {
         type: Number,
-        required: [true, ""]
+        required: [true, ""],
+        index:true
     },
     arabicName: {
         type: String,
