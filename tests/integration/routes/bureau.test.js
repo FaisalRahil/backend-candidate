@@ -93,7 +93,7 @@ describe('bureau route test', () => {
 
         const response = await request(app)
             .get('/api/v1/bureau/')
-            .send({ bureauID: "5e1bb5e507516221677406d3" })
+            .send({bureauID: "5e1bb5e507516221677406d3"})
             .expect(404)
             .expect('Content-Type', /json/)
 
@@ -133,7 +133,7 @@ describe('bureau route test', () => {
         expect(response.body.data._id).to.be.eql(updatedBureau.id)
         expect(response.body.data.arabicName).to.be.eql(updatedBureau.arabicName)
         expect(response.body.data.englishName).to.be.eql(updatedBureau.englishName)
-        response.body.data.should.include.keys(["arabicName", "englishName", "bureauID", "electionID", "state"]);
+        response.body.data.should.include.keys(["arabicName", "englishName", "bureauID", "bureauID", "electionID", "state"]);
 
     })
 
@@ -286,7 +286,7 @@ describe('bureau route test', () => {
         expect(response.body.success).to.be.a("boolean");
         expect(response.body.error).to.equal("Region under this id 5e1bb5e507516221677406d3 was not found")
         expect(response.body.error).to.be.a("string");
-
+        
     })
 
     it('should return list of bureaus and election info based on selected region', async () => {
@@ -297,21 +297,21 @@ describe('bureau route test', () => {
             .expect(200)
             .expect('Content-Type', /json/)
 
-        expect(response.status).to.equal(200)
-        expect(response.body.success).to.be.true;
-        expect(response.body.success).to.be.a("boolean");
-        expect(response.body.data).to.not.be.null;
-        expect(response.body.data).to.not.be.undefined;
-        expect(response.body.data).to.be.an("object")
-        response.body.data.should.include.keys(["arabicName", "englishName", "electionID", "regionID", "state"]);
-        expect(response.body.data.election).to.be.not.null;
-        expect(response.body.data.election).to.be.not.undefined;
-        expect(response.body.data.election).to.be.an('object')
-        response.body.data.election.should.include.keys(["startDate", "endDate", "electionType", "state"]);
-        expect(response.body.data.bureaus).to.be.not.empty;
-        expect(response.body.data.bureaus).to.be.an('array')
-        expect(response.body.data.bureaus[0]).to.be.an('object')
-        response.body.data.bureaus[0].should.include.keys(["arabicName", "englishName", "bureauID", "electionID", "regionID", "state"]);
+            expect(response.status).to.equal(200)
+            expect(response.body.success).to.be.true;
+            expect(response.body.success).to.be.a("boolean");
+            expect(response.body.data).to.not.be.null;
+            expect(response.body.data).to.not.be.undefined;
+            expect(response.body.data).to.be.an("object")
+            response.body.data.should.include.keys(["arabicName", "englishName", "electionID", "regionID", "state"]);
+            expect(response.body.data.election).to.be.not.null;
+            expect(response.body.data.election).to.be.not.undefined;
+            expect(response.body.data.election).to.be.an('object')
+            response.body.data.election.should.include.keys(["startDate", "endDate", "electionType", "state"]);
+            expect(response.body.data.bureaus).to.be.not.empty;
+            expect(response.body.data.bureaus).to.be.an('array')
+            expect(response.body.data.bureaus[0]).to.be.an('object')
+            response.body.data.bureaus[0].should.include.keys(["arabicName", "englishName", "bureauID", "electionID", "regionID", "state"]);
 
     })
 
@@ -319,15 +319,15 @@ describe('bureau route test', () => {
 
         const response = await request(app)
             .get('/api/v1/bureau/bureausWithRegionsAndElections')
-            .send({ regionID: "5e1bb5e507516221677406d3" })
+            .send({regionID: "5e1bb5e507516221677406d3"})
             .expect(404)
             .expect('Content-Type', /json/)
 
-        expect(response.status).to.equal(404)
-        expect(response.body.success).to.be.false;
-        expect(response.body.success).to.be.a("boolean");
-        expect(response.body.error).to.equal("Region under this id 5e1bb5e507516221677406d3 was not found")
-        expect(response.body.error).to.be.a("string");
+            expect(response.status).to.equal(404)
+            expect(response.body.success).to.be.false;
+            expect(response.body.success).to.be.a("boolean");
+            expect(response.body.error).to.equal("Region under this id 5e1bb5e507516221677406d3 was not found")
+            expect(response.body.error).to.be.a("string");
     })
 
 })

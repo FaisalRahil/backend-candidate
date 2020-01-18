@@ -207,6 +207,7 @@ exports.getConstituenciesBasedOnBureauID = asyncHandler(async (req, res, next) =
                         input: "$constituencies", 
                         as: "constituency", 
                         in: { 
+                            id:"$$constituency._id",
                             arabicName: "$$constituency.arabicName", 
                             englishName: "$$constituency.englishName",
                             constituencyID: "$$constituency.constituencyID"  

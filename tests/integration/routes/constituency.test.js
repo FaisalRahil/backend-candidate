@@ -6,13 +6,52 @@ chai.should();
 
 const app = require("../../../server");
 
+
 describe('bureau route test', () => {
 
     let constituencyID = undefined
     let generatedConstituencyID = undefined
 
+    let electionID = undefined
+    let regionID = undefined
+    let bureauID = undefined
+
 
     before(async () => {
+
+        const newElection = {
+            startDate: '2016-04-13',
+            endDate: '2016-04-14',
+            electionType: 'Parliament Election',
+        }
+
+        const createElectionRequest = await request(app).post('/api/v1/election/').send(newElection)
+        electionID = createElectionRequest.body.data._id
+
+        const newRegion = {
+
+            arabicName: "المنطقة الغربية",
+            englishName: "Western region",
+            regionID: Math.floor((Math.random() * 100000000) + 1),
+            electionID
+
+        }
+
+        const createRegionRequest = await request(app).post('/api/v1/region/').send(newRegion)
+        regionID = createRegionRequest.body.data._id
+
+        const newBureau = {
+            bureauID: Math.floor((Math.random() * 100000000) + 1),
+            arabicName: "مكتب طرابلس المركز",
+            englishName: "Tripoli Central Bureau",
+            electionID: electionID,
+            regionID: regionID,
+
+        }
+
+        const createBureauRequest = await request(app).post('/api/v1/bureau/').send(newBureau)
+        bureauID = createBureauRequest.body.data._id
+
 
     })
 
@@ -22,9 +61,9 @@ describe('bureau route test', () => {
             constituencyID: Math.floor((Math.random() * 100000000) + 1),
             arabicName: "تاحوراء",
             englishName: "Tajoura",
-            regionID: "5e1fb63ebd20be756cb5ede6",
-            bureauID: "5e1fb63ebd20be756cb5ede7",
-            electionID: "5e1fb63ebd20be756cb5ede5"
+            regionID: regionID,
+            bureauID: bureauID,
+            electionID: electionID
         }
 
         const response = await request(app)
@@ -317,21 +356,68 @@ describe('bureau route test', () => {
     it('should get constituencies based on selected Region', async () => {
 
 
-       
+        const response = await request(app)
+            .get('/api/v1/constituency/getConstituenciesBasedOnRegionID')
+            .expect(200)
+            .send({id:regionID})
+            .expect('Content-Type', /json/)
+
+            expect(response.status).to.equal(200)
+            expect(response.body.data).to.not.be.null;
+            expect(response.body.data).to.not.be.undefined;
+            expect(response.body.data.state).to.be.true
+            response.body.data.should.include.keys(["arabicName", "englishName", "constituencies", "state"]);
+            expect(response.body.data.constituencies).to.be.not.empty
+            expect(response.body.data.constituencies).to.be.an('array')
+            expect(response.body.data.constituencies).to.not.be.null;
+            expect(response.body.data.constituencies).to.not.be.undefined;
+            expect(response.body.data.constituencies[0]).to.be.an('object')
+            response.body.data.constituencies[0].should.include.keys(["arabicName", "englishName", "constituencyID"]);
 
     })
 
     it('should get constituencies based on selected Election', async () => {
 
 
-       
+        const response = await request(app)
+        .get('/api/v1/constituency/getConstituenciesBasedOnElectionID')
+        .send({electionID})
+        .expect(200)
+        .expect('Content-Type', /json/)
+
+        expect(response.status).to.equal(200)
+        expect(response.body.data).to.not.be.null;
+        expect(response.body.data).to.not.be.undefined;
+        expect(response.body.data.state).to.be.true
+        response.body.data.should.include.keys(["startDate", "endDate", "electionType", "state","constituencies"]);
+        expect(response.body.data.constituencies).to.be.not.empty
+        expect(response.body.data.constituencies).to.be.an('array')
+        expect(response.body.data.constituencies).to.not.be.null;
+        expect(response.body.data.constituencies).to.not.be.undefined;
+        expect(response.body.data.constituencies[0]).to.be.an('object')
+        response.body.data.constituencies[0].should.include.keys(["arabicName", "englishName", "constituencyID"]);
 
     })
 
     it('should get constituencies based on selected Bureau', async () => {
 
+        const response = await request(app)
+        .get('/api/v1/constituency/getConstituenciesBasedOnBureauID')
+        .send({id:bureauID})
+        .expect(200)
+        .expect('Content-Type', /json/)
 
-       
+        expect(response.status).to.equal(200)
+        expect(response.body.data).to.not.be.null;
+        expect(response.body.data).to.not.be.undefined;
+        expect(response.body.data.state).to.be.true
+        response.body.data.should.include.keys(["arabicName", "englishName", "state" ,"constituencies"]);
+        expect(response.body.data.constituencies).to.be.not.empty
+        expect(response.body.data.constituencies).to.be.an('array')
+        expect(response.body.data.constituencies).to.not.be.null;
+        expect(response.body.data.constituencies).to.not.be.undefined;
+        expect(response.body.data.constituencies[0]).to.be.an('object')
+        response.body.data.constituencies[0].should.include.keys(["arabicName", "englishName", "constituencyID","id"]);
     })
 
 })
