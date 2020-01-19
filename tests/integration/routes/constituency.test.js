@@ -138,8 +138,6 @@ describe('bureau route test', () => {
         expect(response.body.data).to.be.not.null
         expect(response.body.data).to.be.an('object')
         response.body.data.should.include.keys(["constituencyID", "arabicName", "englishName", "_id", "state"]);
-
-
     })
 
     it('should not get a constituency based on non-existing _id', async () => {

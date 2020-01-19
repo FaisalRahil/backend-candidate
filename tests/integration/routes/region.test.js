@@ -11,12 +11,12 @@ let app = require("../../../server")
 
 describe('region route test', () => {
 
-    
     let regionID = undefined
+    let generatedRegionID = undefined
     let regionResponse = undefined
     let electionID = undefined
 
-    
+
 
     before(async () => {
 
@@ -30,31 +30,31 @@ describe('region route test', () => {
             .post('/api/v1/election/')
             .send(newElection)
 
-       
-        
+
+
         electionID = response.body.data._id
-     
 
     })
 
-    
+
 
     const createNewRegion = async (newRegion) => {
 
-       
-        
+
+
         let response = await request(app)
             .post('/api/v1/region/')
             .send(newRegion)
             .expect(201)
             .expect('Content-Type', /json/)
 
-            
-
-          regionID = response.body.data._id
 
 
-          return response
+        generatedRegionID = response.body.data._id
+        regionID = response.body.data.regionID
+
+
+        return response
 
     }
 
@@ -66,11 +66,10 @@ describe('region route test', () => {
             englishName: "Western region",
             regionID: Math.floor((Math.random() * 100000000) + 1),
             electionID
-    
+
         }
-        
+
         regionResponse = await createNewRegion(newRegion)
-        
 
         expect(regionResponse.status).to.equal(201)
         expect(regionResponse.body).to.not.be.null;
@@ -82,12 +81,47 @@ describe('region route test', () => {
         expect(regionResponse.body.data.englishName).to.be.eql(newRegion.englishName)
         expect(regionResponse.body.data.regionID).to.be.eql(newRegion.regionID)
         expect(regionResponse.body.data.electionID).to.be.eql(newRegion.electionID)
-        regionResponse.body.data.should.include.keys(["arabicName", "englishName", "regionID","electionID", "state"]);
+        regionResponse.body.data.should.include.keys(["arabicName", "englishName", "regionID", "electionID", "state"]);
 
     })
 
-    it('should get an existing Region', async () => {
+    it('should get an existing Region based on an existing _id', async () => {
 
+
+        let response = await request(app)
+            .get('/api/v1/region/')
+            .send({ id: generatedRegionID })
+            .expect(200)
+            .expect('Content-Type', /json/)
+
+        expect(response.status).to.equal(200)
+        expect(response.body.success).to.be.true
+        expect(response.body.data).to.be.not.undefined
+        expect(response.body.data).to.be.not.null
+        response.body.data.should.include.keys(["_id","arabicName", "englishName", "regionID", "state"]);
+
+
+    })
+
+    it('should not get a Region based on non-existing _id', async () => {
+
+
+        const response = await request(app)
+            .get('/api/v1/region/')
+            .send({ id: "5e1bb5e507516221677406d3" })
+            .expect(404)
+            .expect('Content-Type', /json/)
+
+        expect(response.status).to.equal(404)
+        expect(response.body.success).to.be.false
+        expect(response.body.error).to.be.not.undefined
+        expect(response.body.error).to.be.not.null
+        assert.equal(response.body.error, "Region under this id 5e1bb5e507516221677406d3 was not found")
+        response.body.should.include.keys(["success","error"]);
+
+    })
+
+    it('should get an existing Region based on an existing regionID', async () => {
 
         let response = await request(app)
             .get('/api/v1/region/')
@@ -99,35 +133,33 @@ describe('region route test', () => {
         expect(response.body.success).to.be.true
         expect(response.body.data).to.be.not.undefined
         expect(response.body.data).to.be.not.null
-        response.body.data.should.include.keys(["arabicName", "englishName", "regionID","electionID", "state"]);
-
+        response.body.data.should.include.keys(["_id","arabicName", "englishName", "regionID", "state"]);
 
     })
 
-    it('should not get a non-existing Region', async () => {
+    it('should not get a Region based on non-existing regionID', async () => {
 
 
         const response = await request(app)
             .get('/api/v1/region/')
-            .send({ regionID: "5e1bb5e507516221677406d3" })
+            .send({ regionID: 473467892734893 })
             .expect(404)
             .expect('Content-Type', /json/)
-
 
         expect(response.status).to.equal(404)
         expect(response.body.success).to.be.false
         expect(response.body.error).to.be.not.undefined
         expect(response.body.error).to.be.not.null
-        assert.equal(response.body.error, "Region under this id 5e1bb5e507516221677406d3 was not found")
-
+        assert.equal(response.body.error, "Region under this id 473467892734893 was not found")
+        response.body.should.include.keys(["success","error"]);
 
     })
 
-    it('should update an existing Region', async () => {
+    it('should update an existing Region based on _id', async () => {
 
         let updatedRegion = {
 
-            id: regionID,
+            id: generatedRegionID,
             arabicName: "المنطقة الشرقية",
             englishName: "Eastern region",
 
@@ -147,18 +179,16 @@ describe('region route test', () => {
         expect(response.body.data._id).to.be.eql(updatedRegion.id)
         expect(response.body.data.arabicName).to.be.eql(updatedRegion.arabicName)
         expect(response.body.data.englishName).to.be.eql(updatedRegion.englishName)
-        response.body.data.should.include.keys(["arabicName", "englishName", "regionID","electionID", "state"]);
+        response.body.data.should.include.keys(["arabicName", "englishName", "regionID", "electionID", "state"]);
 
     })
 
-    it('should not update a non existing Region', async () => {
+    it('should not update a Region based on non existing _id', async () => {
 
         const updatedRegion = {
-
             id: "5e1bb5e507516221677406d3",
             arabicName: "المنطقة الشرقية",
             englishName: "Eastern region",
-
         }
 
         const response = await request(app)
@@ -173,15 +203,71 @@ describe('region route test', () => {
         expect(response.body.error).to.be.not.undefined
         expect(response.body.error).to.be.not.null
         assert.equal(response.body.error, "Region under this id 5e1bb5e507516221677406d3 was not found")
+        response.body.should.include.keys(["success","error"]);
+
 
 
 
     })
 
-    it('should deactivate an existing Region', async () => {
+    it('should update an existing Region based on RegionID', async () => {
+
+        let updatedRegion = {
+
+            regionID,
+            arabicName: "المنطقة الجتوبية",
+            englishName: "Southern region",
+
+        }
+
+        const response = await request(app)
+            .put('/api/v1/region/')
+            .send(updatedRegion)
+            .expect(200)
+            .expect('Content-Type', /json/)
+
+        expect(response.status).to.equal(200)
+        expect(response.body.success).to.be.true
+        expect(response.body.data).to.be.not.undefined
+        expect(response.body.data).to.be.not.null
+        expect(response.body.data).to.be.an('object')
+        expect(response.body.data.regionID).to.be.eql(updatedRegion.regionID)
+        expect(response.body.data.arabicName).to.be.eql(updatedRegion.arabicName)
+        expect(response.body.data.englishName).to.be.eql(updatedRegion.englishName)
+        response.body.data.should.include.keys(["arabicName", "englishName", "regionID", "electionID", "state"]);
+
+    })
+
+    it('should not update a Region based on non existing RegionID', async () => {
+
+        let updatedRegion = {
+
+            regionID: 473467892734893,
+            arabicName: "المنطقة الشرقية",
+            englishName: "Eastern region",
+
+        }
+
+        const response = await request(app)
+            .put('/api/v1/region/')
+            .send(updatedRegion)
+            .expect(404)
+            .expect('Content-Type', /json/)
+
+        expect(response.status).to.equal(404)
+        expect(response.body.success).to.be.false
+        expect(response.body.error).to.be.not.undefined
+        expect(response.body.error).to.be.not.null
+        assert.equal(response.body.error, "Region under this id 473467892734893 was not found")
+        response.body.should.include.keys(["success","error"]);
+
+
+    })
+
+    it('should deactivate an existing Region based on an existing _id', async () => {
 
         const deactivateRegion = {
-            regionID,
+            id: generatedRegionID,
             state: false
         }
 
@@ -199,13 +285,10 @@ describe('region route test', () => {
         expect(response.body.data).to.not.be.null;
         expect(response.body.data).to.not.be.undefined;
         expect(response.body.data.state).to.be.eql(deactivateRegion.state)
-
-
-
-
+        response.body.data.should.include.keys(["state"]);
     })
 
-    it('should activate an existing Region', async () => {
+    it('should activate an existing Region based on an existing RegionID', async () => {
 
         const activateRegion = {
             regionID,
@@ -225,17 +308,14 @@ describe('region route test', () => {
         expect(response.body.data).to.not.be.null;
         expect(response.body.data).to.not.be.undefined;
         expect(response.body.data.state).to.be.eql(activateRegion.state)
- 
-
-
-
+        response.body.data.should.include.keys(["state"]);
 
     })
 
-    it("should not change non-existing Region\'s state", async () => {
+    it("should not change non-existing Region\'s state based on non existing _id", async () => {
 
         const deactivateRegion = {
-            regionID: '5e1bb5e507516221677406d3',
+            id: '5e1bb5e507516221677406d3',
             state: false
         }
 
@@ -251,11 +331,35 @@ describe('region route test', () => {
         expect(response.body.error).to.be.not.null;
         expect(response.body.error).to.be.a('string')
         assert.equal(response.body.error, "Region under this id 5e1bb5e507516221677406d3 was not found")
+        response.body.should.include.keys(["success","error"]);
 
 
     })
 
-    it('should return list of regions ', async () => {
+    it("should not change non-existing Region\'s state based on non existing RegionID", async () => {
+
+        const deactivateRegion = {
+            regionID: 473467892734893,
+            state: false
+        }
+
+        const response = await request(app)
+            .put('/api/v1/region/toggleRegionState')
+            .send(deactivateRegion)
+            .expect(404)
+            .expect('Content-Type', /json/)
+
+        expect(response.status).to.equal(404)
+        expect(response.body.success).to.be.false;
+        expect(response.body.error).to.be.not.undefined;
+        expect(response.body.error).to.be.not.null;
+        expect(response.body.error).to.be.a('string')
+        assert.equal(response.body.error, "Region under this id 473467892734893 was not found")
+        response.body.should.include.keys(["success","error"]);
+
+    })
+
+    it('should return list of regions', async () => {
 
         const response = await request(app)
             .get('/api/v1/region/regions')
@@ -263,13 +367,12 @@ describe('region route test', () => {
             .expect('Content-Type', /json/)
 
         expect(response.status).to.equal(200)
-        expect(response.body.regions.length).to.be.greaterThan(0)
+        expect(response.body.regions).to.be.not.empty
         expect(response.body.regions).to.be.an('array')
         expect(response.body.regions[0]).to.be.an('object')
         expect(response.body.regions).to.not.be.null;
         expect(response.body.regions).to.not.be.undefined;
-
-
+        response.body.regions[0].should.include.keys(["state","_id","arabicName","englishName","regionID"]);
     })
 
     it('should return list of regions based on selected election', async () => {
@@ -288,9 +391,8 @@ describe('region route test', () => {
         expect(response.body.data.regions).to.be.not.empty;
         expect(response.body.data.regions).to.be.an('array')
         expect(response.body.data.regions[0]).to.be.an('object')
-        response.body.data.should.include.keys(["startDate", "endDate", "electionType"]);
-        response.body.data.regions[0].should.include.keys(["arabicName", "englishName", "electionID", "regionID"]);
-
+        response.body.data.should.include.keys(["startDate", "endDate", "electionType","state","regions"]);
+        response.body.data.regions[0].should.include.keys(["arabicName", "englishName", "regionID", "state"]);
     })
 
     it('should return nothing on selecting non-existing election', async () => {
@@ -308,6 +410,6 @@ describe('region route test', () => {
         expect(response.body.success).to.be.a("boolean");
         expect(response.body.error).to.be.a('string')
         assert.equal(response.body.error, "Region under this election id 5e1bb5e507516221677406d3 was not found")
-
+        response.body.should.include.keys(["success","error"]);
     })
 })

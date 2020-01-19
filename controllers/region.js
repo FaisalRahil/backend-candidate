@@ -18,19 +18,19 @@ exports.createRegion = asyncHandler(async (req, res, next) => {
 
 exports.getRegions = asyncHandler(async (req, res, next) => {
 
-    const regions = await Region.find()
+    const regions = await Region.find().select({electionID:0,createdAt:0, __v:0}).sort({createdAt:-1})
     res.status(200).json({ regions })
 })
 
 
 exports.getRegion = asyncHandler(async (req, res, next) => {
 
-    const region = await Region.findById(req.body.regionID)
+    const region = await Region.findOne({ $or: [{ _id: req.body.id }, { regionID: req.body.regionID }] }).select({electionID:0, createdAt:0, __v:0})
 
     if (!region) {
         return next(
             new ErrorResponse(
-                `Region under this id ${req.body.regionID} was not found`,
+                `Region under this id ${req.body.id ? req.body.id : req.body.regionID} was not found`,
                 404
             )
         )
@@ -63,6 +63,35 @@ exports.getRegionsByElectionID = asyncHandler(async (req, res, next) => {
         },
         {
             $match: { "regions": { $ne: [] } }
+        },
+        { "$group": {
+            _id: "$_id",
+            startDate: { "$first":"$startDate"},
+            endDate: { "$first":"$endDate"},
+            electionType: { "$first":"$electionType"},
+            regions:{ "$first":"$regions"},
+            state: { "$first":"$state"}
+        }},
+        {
+            $project: {
+                _id:0,
+                startDate:1,
+                endDate:1,
+                electionType:1,
+                state:1,
+                regions:{
+                    $map:{
+                        input: "$regions", 
+                        as: "region", 
+                        in: { 
+                            arabicName: "$$region.arabicName", 
+                            englishName: "$$region.englishName",
+                            regionID: "$$region.regionID", 
+                            "state": "$$region.state"
+                        } 
+                    }
+                }
+            }
         }
         
     ])
@@ -83,10 +112,12 @@ exports.getRegionsByElectionID = asyncHandler(async (req, res, next) => {
 
 })
 
-// Joining three collection
+
 exports.updateRegion = asyncHandler(async (req, res, next) => {
-    const updatedRegion = await Region.findByIdAndUpdate(
-        req.body.id,
+    const updatedRegion = await Region.findOneAndUpdate(
+       {
+           $or: [{ _id: req.body.id }, { regionID: req.body.regionID }]
+        },
         req.body,
         {
             new: true,
@@ -97,7 +128,7 @@ exports.updateRegion = asyncHandler(async (req, res, next) => {
 
         return next(
             new ErrorResponse(
-                `Region under this id ${req.body.id} was not found`,
+                `Region under this id ${req.body.id ? req.body.id : req.body.regionID} was not found`,
                 404
             )
         )
@@ -110,9 +141,9 @@ exports.updateRegion = asyncHandler(async (req, res, next) => {
 })
 
 exports.toggleRegionState = asyncHandler(async (req, res, next) => {
-    const updatedRegion = await Region.findByIdAndUpdate(
+    const updatedRegion = await Region.findOneAndUpdate(
         {
-            _id: req.body.regionID,
+            $or: [{ _id: req.body.id }, { regionID: req.body.regionID }],
         },
         {
             $set: { state: req.body.state }
@@ -121,13 +152,13 @@ exports.toggleRegionState = asyncHandler(async (req, res, next) => {
             new: true,
             runValidators: true
         }
-    )
+    ).select({_id:0, arabicName:0, englishName: 0, regionID:0, electionID:0, createdAt:0, __v:0})
 
     if (!updatedRegion) {
 
         return next(
             new ErrorResponse(
-                `Region under this id ${req.body.regionID} was not found`,
+                `Region under this id ${req.body.id ? req.body.id : req.body.regionID} was not found`,
                 404
             )
         )
