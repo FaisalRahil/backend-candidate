@@ -20,12 +20,12 @@ exports.createBureau = asyncHandler(async (req, res, next) => {
 
 exports.getBureau = asyncHandler(async (req, res, next) => {
 
-    const bureau = await Bureau.findById(req.body.bureauID)
+    const bureau = await Bureau.findOne({$or:[{_id: req.body.id},{bureauID: req.body.bureauID}]}).select({__v:0, createdAt:0, regionID:0, electionID:0})
 
     if (!bureau) {
         return next(
             new ErrorResponse(
-                `Bureau under this id ${req.body.bureauID} was not found`,
+                `Bureau under this id ${req.body.id ? req.body.id : req.body.bureauID} was not found`,
                 404
             )
         )
@@ -40,7 +40,7 @@ exports.getBureau = asyncHandler(async (req, res, next) => {
 
 
 exports.getBureaus = asyncHandler(async (req, res, next) => {
-    const bureaus = await Bureau.find()
+    const bureaus = await Bureau.find().select({__v:0, createdAt:0, regionID:0 , electionID:0})
 
     return res.status(200).json({bureaus})
 })
@@ -156,7 +156,7 @@ exports.updateBureau = asyncHandler(async (req, res, next) => {
 exports.changeBureauState = asyncHandler(async (req, res, next) => {
     const updatedBureauState = await Bureau.findByIdAndUpdate(
         {
-            _id: req.body.bureauID,
+            _id: req.body.id,
         },
         {
             $set: { state: req.body.state }
@@ -171,7 +171,7 @@ exports.changeBureauState = asyncHandler(async (req, res, next) => {
 
         return next(
             new ErrorResponse(
-                `Bureau under this id ${req.body.bureauID} was not found`,
+                `Bureau under this id ${req.body.id ? req.body.id : req.body.bureauID} was not found`,
                 404
             )
         )
