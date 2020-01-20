@@ -4,7 +4,7 @@ const ErrorResponse = require("../utils/errorResponse");
 const asyncHandler = require("../middleware/async");
 const Bureau = require('../models/Bureau')
 const Region = require("../models/Region");
-
+const Election = require("../models/Election");
 
 
 exports.createBureau = asyncHandler(async (req, res, next) => {
@@ -50,9 +50,8 @@ exports.getBureausByRegionID = asyncHandler(async (req, res, next) => {
     let results = await Region.aggregate([
 
         {
-            $match: { "_id": mongoose.Types.ObjectId(req.body.regionID), }
+            $match: {$or: [{ "_id": mongoose.Types.ObjectId(req.body.id)}, {"regionID": req.body.regionID}]}
         },
-
         {
             $lookup: {
                 from: "bureaus",
@@ -63,6 +62,36 @@ exports.getBureausByRegionID = asyncHandler(async (req, res, next) => {
         },
         {
             $match: { "bureaus": { $ne: [] } }
+        },
+        { "$group": {
+            _id: "$_id",
+            regionID:{ "$first":"$regionID"},
+            arabicName: { "$first":"$arabicName"},
+            englishName: { "$first":"$englishName"},
+            state: { "$first":"$state"},
+            bureaus:{ "$first":"$bureaus"},
+        }},
+        {
+            $project: {
+                _id:1,
+                regionID:1,
+                arabicName:1,
+                englishName:1,
+                state:1,
+                bureaus:{
+                    $map:{
+                        input: "$bureaus", 
+                        as: "bureau", 
+                        in: { 
+
+                            arabicName: "$$bureau.arabicName", 
+                            englishName: "$$bureau.englishName",
+                            bureauID: "$$bureau.bureauID",
+                            state: "$$bureau.state"    
+                        } 
+                    }
+                }
+            }
         }
 
     ])
@@ -70,7 +99,7 @@ exports.getBureausByRegionID = asyncHandler(async (req, res, next) => {
     if (!results || results.length === 0) {
         return next(
             new ErrorResponse(
-                `Region under this id ${req.body.regionID} was not found`,
+                `Region under this id ${req.body.id ? req.body.id : req.body.bureauID} was not found`,
                 404
             )
         )
@@ -83,31 +112,53 @@ exports.getBureausByRegionID = asyncHandler(async (req, res, next) => {
 
 })
 
-exports.getBureausInfoWithRegionAndElection = asyncHandler(async (req, res, next) => {
-    let results = await Region.aggregate([
+exports.getBureausByElectionID = asyncHandler(async (req, res, next) => {
+    let results = await Election.aggregate([
 
         {
-            $match: { "_id": mongoose.Types.ObjectId(req.body.regionID), }
+            $match: { "_id": mongoose.Types.ObjectId(req.body.id)}
         },
-        {
-            $lookup: {
-                from: "elections",
-                localField: "electionID",
-                foreignField: "_id",
-                as: "election"
-            }
-        },
-        { $unwind: "$election" },
         {
             $lookup: {
                 from: "bureaus",
                 localField: "_id",
-                foreignField: "regionID",
+                foreignField: "electionID",
                 as: "bureaus"
             }
         },
         {
             $match: { "bureaus": { $ne: [] } }
+        },
+        
+        { "$group": {
+            _id: "$_id",
+            startDate: { "$first":"$startDate"},
+            endDate: { "$first":"$endDate"},
+            electionType: { "$first":"$electionType"},
+            state: { "$first":"$state"},
+            bureaus:{ "$first":"$bureaus"},
+        }},
+        {
+            $project: {
+                _id:1,
+                startDate:1,
+                endDate:1,
+                electionType:1,
+                state:1,
+                bureaus:{
+                    $map:{
+                        input: "$bureaus", 
+                        as: "bureau", 
+                        in: { 
+                            _id: "$$bureau._id", 
+                            arabicName: "$$bureau.arabicName", 
+                            englishName: "$$bureau.englishName",
+                            bureauID: "$$bureau.bureauID",
+                            state: "$$bureau.state"    
+                        } 
+                    }
+                }
+            }
         }
 
     ])
@@ -115,7 +166,7 @@ exports.getBureausInfoWithRegionAndElection = asyncHandler(async (req, res, next
     if (!results || results.length === 0) {
         return next(
             new ErrorResponse(
-                `Region under this id ${req.body.regionID} was not found`,
+                `Region under this id ${req.body.id} was not found`,
                 404
             )
         )
@@ -129,8 +180,11 @@ exports.getBureausInfoWithRegionAndElection = asyncHandler(async (req, res, next
 
 
 exports.updateBureau = asyncHandler(async (req, res, next) => {
-    const updatedBureau = await Bureau.findByIdAndUpdate(
-        req.body.id,
+  
+    const updatedBureau = await Bureau.findOneAndUpdate(
+        {
+            $or:[{_id: req.body.id},{bureauID: req.body.bureauID}]
+        },
         req.body,
         {
             new: true,
@@ -141,7 +195,7 @@ exports.updateBureau = asyncHandler(async (req, res, next) => {
     if (!updatedBureau) {
         return next(
             new ErrorResponse(
-                `Bureau under this id ${req.body.id} was not found`,
+                `Bureau under this id ${req.body.id ? req.body.id : req.body.bureauID} was not found`,
                 404
             )
         )
@@ -154,9 +208,10 @@ exports.updateBureau = asyncHandler(async (req, res, next) => {
 })
 
 exports.changeBureauState = asyncHandler(async (req, res, next) => {
-    const updatedBureauState = await Bureau.findByIdAndUpdate(
+    
+    const updatedBureauState = await Bureau.findOneAndUpdate(
         {
-            _id: req.body.id,
+            $or:[{_id: req.body.id},{bureauID: req.body.bureauID}]
         },
         {
             $set: { state: req.body.state }
@@ -165,7 +220,7 @@ exports.changeBureauState = asyncHandler(async (req, res, next) => {
             new: true,
             runValidators: true
         }
-    )
+    ).select({_id:0, state:1})
 
     if (!updatedBureauState) {
 
