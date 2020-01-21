@@ -8,7 +8,7 @@ const SubconstituencySchema  = mongoose.Schema({
         require: [true, ""],
         index: true,
     },
-    consistuency: {
+    consistuencyID: {
         type: mongoose.Schema.Types.ObjectId,
         require: [true, ""]
     },
@@ -35,3 +35,6 @@ const SubconstituencySchema  = mongoose.Schema({
 
 
 })
+
+
+module.exports = mongoose.model('Subconstituency', SubconstituencySchema)
