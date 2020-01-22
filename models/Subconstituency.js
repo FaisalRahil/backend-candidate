@@ -28,6 +28,10 @@ const SubconstituencySchema  = mongoose.Schema({
         type:mongoose.Schema.Types.ObjectId,
         unique: true,
     },
+    state:{
+        type:Boolean,
+        default: true,
+    },
     createdAt: {
         type: Date,
         default: Date.now
