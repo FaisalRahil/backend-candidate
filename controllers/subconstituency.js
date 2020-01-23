@@ -19,7 +19,7 @@ exports.createSubconstituency = asyncHandler(async (req, res, next) => {
 })
 
 exports.getSubconstituency = asyncHandler(async (req, res, next) => {
-    const subconstituency = await Subconstituency.findOne({$or: [{_id:req.body.id}, {subconstituencyID:req.body.subconstituecnyID}]}).select({_id:1,subconstituencyID:1, arabicName:1, englishName:1})
+    const subconstituency = await Subconstituency.findOne({$or: [{_id:req.body.id}, {subconstituencyID:req.body.subconstituencyID}]}).select({_id:1,subconstituencyID:1, arabicName:1, englishName:1})
 
     if (!subconstituency) {
         return next(
