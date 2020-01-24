@@ -12,7 +12,7 @@ const { getSubconstituencies,
 
 router.route('/subconstituencies').get(getSubconstituencies)
 router.route('/').post(createSubconstituency).get(getSubconstituency).put(updateSubconstituency)
-router.route('/toggleRegionState').put(toggleSubconstituencyState)
+router.route('/toggleSubconstituencyState').put(toggleSubconstituencyState)
 router.route('/subconstituenciesByElection').get(getSubconstituencyByElectionID)
 router.route('/subconstituenciesByBureau').get(getSubconstituencyByBureauID)
 router.route('/subconstituenciesByConstituency').get(getSubconstituencyByConstituencyID)

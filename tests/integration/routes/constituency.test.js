@@ -7,7 +7,7 @@ chai.should();
 const app = require("../../../server");
 
 
-describe('bureau route test', () => {
+describe('Constituency route test', () => {
 
     let constituencyID = undefined
     let generatedConstituencyID = undefined
@@ -184,8 +184,6 @@ describe('bureau route test', () => {
         expect(response.body.data.englishName).to.be.eql(updatedConstituency.englishName)
         expect(response.body.data.constituencyID).to.be.eql(updatedConstituency.constituencyID)
         response.body.data.should.include.keys(["arabicName", "englishName", "constituencyID", "state"]);
-
-
     })
 
     it('should not update a constituency based on non-existing constituencyID', async () => {
@@ -268,14 +266,14 @@ describe('bureau route test', () => {
 
     it('should deactivate a constituency based on constituencyID', async () => {
 
-        const deactivateBureau = {
+        const deactivateConstituency = {
             constituencyID,
             state: false
         }
 
         const response = await request(app)
             .put('/api/v1/constituency/toggleConstituencyState')
-            .send(deactivateBureau)
+            .send(deactivateConstituency)
             .expect(200)
             .expect('Content-Type', /json/)
 
@@ -283,21 +281,21 @@ describe('bureau route test', () => {
         expect(response.body.success).to.be.true;
         expect(response.body.data).to.not.be.null;
         expect(response.body.data).to.not.be.undefined;
-        expect(response.body.data.state).to.be.eql(deactivateBureau.state)
+        expect(response.body.data.state).to.be.eql(deactivateConstituency.state)
 
     })
 
 
     it('should activate a constituency based on _id', async () => {
 
-        const activateBureau = {
+        const activateConstituency= {
             id: generatedConstituencyID,
             state: true
         }
 
         const response = await request(app)
             .put('/api/v1/constituency/toggleConstituencyState')
-            .send(activateBureau)
+            .send(activateConstituency)
             .expect(200)
             .expect('Content-Type', /json/)
 
@@ -305,20 +303,20 @@ describe('bureau route test', () => {
         expect(response.body.success).to.be.true;
         expect(response.body.data).to.not.be.null;
         expect(response.body.data).to.not.be.undefined;
-        expect(response.body.data.state).to.be.eql(activateBureau.state)
+        expect(response.body.data.state).to.be.eql(activateConstituency.state)
 
     })
 
     it("should not change non-existing Constituency\'s state", async () => {
 
-        const deactivateBureau = {
+        const deactivateConstituency = {
             id: '5e1bb5e507516221677406d3',
             state: false
         }
 
         const response = await request(app)
             .put('/api/v1/constituency/toggleConstituencyState')
-            .send(deactivateBureau)
+            .send(deactivateConstituency)
             .expect(404)
             .expect('Content-Type', /json/)
 

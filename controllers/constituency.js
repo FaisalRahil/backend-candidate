@@ -45,7 +45,7 @@ exports.getConstituencies = asyncHandler(async (req, res, next) => {
 })
 
 exports.getConstituenciesBasedOnElectionID = asyncHandler(async (req, res, next) => {
-console.error(req.body)
+
     let results = await Election.aggregate([
 
         {

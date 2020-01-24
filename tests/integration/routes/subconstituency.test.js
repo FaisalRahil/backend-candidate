@@ -164,5 +164,165 @@ describe('', () => {
 
     })
 
+    it('should update a subconstituency based on _id', async () => {
+
+        const updatedSubconstituency = {
+            id: generatedSubconsitiuencyID,
+            arabicName: "طرابلس المركز",
+            englishName: "Ttipoli Central",
+        }
+
+        const response = await request(app)
+            .put('/api/v1/subconstituency')
+            .send(updatedSubconstituency)
+            .expect(200)
+            .expect('Content-Type', /json/)
+
+        expect(response.status).to.equal(200)
+        expect(response.body.success).to.be.true
+        expect(response.body.data).to.be.not.undefined
+        expect(response.body.data).to.be.not.null
+        expect(response.body.data).to.be.an('object')
+        expect(response.body.data.arabicName).to.be.eql(updatedSubconstituency.arabicName)
+        expect(response.body.data.englishName).to.be.eql(updatedSubconstituency.englishName)
+        expect(response.body.data.constituencyID).to.be.eql(updatedSubconstituency.constituencyID)
+        response.body.data.should.include.keys(["arabicName", "englishName", "subconstituencyID", "state"]);
+    })
+
+    it('should not update a constituency based on non-existing _id', async () => {
+
+        const updatedSubconstituency = {
+            id: "5e195075705b65d4a1c52fb4",
+            arabicName: "طرابلس المركز",
+            englishName: "Ttipoli Central",
+        }
+
+        const response = await request(app)
+            .put('/api/v1/subconstituency')
+            .send(updatedSubconstituency)
+            .expect(404)
+            .expect('Content-Type', /json/)
+
+        expect(response.status).to.equal(404)
+        expect(response.body.success).to.be.false;
+        expect(response.body.error).to.be.not.undefined;
+        expect(response.body.error).to.be.not.null;
+        expect(response.body.error).to.be.a('string')
+        assert.equal(response.body.error, "Subconstituency under this id 5e195075705b65d4a1c52fb4 was not found")
+        response.body.should.include.keys(["error", "success"]);
+    })
+
+    it('should update a subconstituency based on subconstituencyID', async () => {
+
+        const updatedSubconstituency = {
+            subconstituencyID,
+            arabicName: "طرابلس المركز",
+            englishName: "Ttipoli Central",
+        }
+
+        const response = await request(app)
+            .put('/api/v1/subconstituency')
+            .send(updatedSubconstituency)
+            .expect('Content-Type', /json/)
+
+        expect(response.status).to.equal(200)
+        expect(response.body.success).to.be.true
+        expect(response.body.data).to.be.not.undefined
+        expect(response.body.data).to.be.not.null
+        expect(response.body.data).to.be.an('object')
+        expect(response.body.data.arabicName).to.be.eql(updatedSubconstituency.arabicName)
+        expect(response.body.data.englishName).to.be.eql(updatedSubconstituency.englishName)
+        expect(response.body.data.constituencyID).to.be.eql(updatedSubconstituency.constituencyID)
+        response.body.data.should.include.keys(["arabicName", "englishName", "subconstituencyID", "state"]);
+    })
+
+    it('should not update a constituency based on non-existing subconstituencyID', async () => {
+
+        const updatedSubconstituency = {
+            subconstituencyID:473467892734893,
+            arabicName: "طرابلس المركز",
+            englishName: "Ttipoli Central",
+        }
+
+        const response = await request(app)
+            .put('/api/v1/subconstituency')
+            .send(updatedSubconstituency)
+            .expect(404)
+            .expect('Content-Type', /json/)
+
+        expect(response.status).to.equal(404)
+        expect(response.body.success).to.be.false;
+        expect(response.body.error).to.be.not.undefined;
+        expect(response.body.error).to.be.not.null;
+        expect(response.body.error).to.be.a('string')
+        assert.equal(response.body.error, "Subconstituency under this id 473467892734893 was not found")
+        response.body.should.include.keys(["error", "success"]);
+    })
+
+    it('should deactivate a subconstituency based on subconstituencyID', async () => {
+
+        const deactivateSubconstituency = {
+            subconstituencyID,
+            state: false
+        }
+
+        const response = await request(app)
+            .put('/api/v1/subconstituency/toggleSubconstituencyState')
+            .send(deactivateSubconstituency)
+            .expect(200)
+            .expect('Content-Type', /json/)
+
+        expect(response.status).to.equal(200)
+        expect(response.body.success).to.be.true;
+        expect(response.body.data).to.not.be.null;
+        expect(response.body.data).to.not.be.undefined;
+        expect(response.body.data.state).to.be.eql(deactivateSubconstituency.state)
+
+    })
+
+
+    it('should activate a subconstituency based on _id', async () => {
+
+        const activateSubconstituency = {
+            id: generatedSubconsitiuencyID,
+            state: true
+        }
+
+        const response = await request(app)
+            .put('/api/v1/subconstituency/toggleSubconstituencyState')
+            .send(activateSubconstituency)
+            .expect(200)
+            .expect('Content-Type', /json/)
+
+        expect(response.status).to.equal(200)
+        expect(response.body.success).to.be.true;
+        expect(response.body.data).to.not.be.null;
+        expect(response.body.data).to.not.be.undefined;
+        expect(response.body.data.state).to.be.eql(activateSubconstituency.state)
+
+    })
+
+    it("should not change non-existing Subonstituency\'s state", async () => {
+
+        const deactivateSubconstituency= {
+            id: '5e1bb5e507516221677406d3',
+            state: false
+        }
+
+        const response = await request(app)
+            .put('/api/v1/subconstituency/toggleSubConstituencyState')
+            .send(deactivateSubconstituency)
+            .expect(404)
+            .expect('Content-Type', /json/)
+
+        expect(response.status).to.equal(404)
+        expect(response.body.success).to.be.false;
+        expect(response.body.error).to.be.not.undefined;
+        expect(response.body.error).to.be.not.null;
+        expect(response.body.error).to.be.a('string')
+        assert.equal(response.body.error, "Subconstituency under this id 5e1bb5e507516221677406d3 was not found")
+        response.body.should.include.keys(["error", "success"]);
+
+    })
 
 })

@@ -251,7 +251,7 @@ exports.getSubconstituencyByBureauID = asyncHandler(async (req, res, next) => {
 exports.updateSubconstituency = asyncHandler(async (req, res, next) => {
     const updatedsubconstituency = await Subconstituency.findOneAndUpdate(
         {
-            $or:[{_id: req.body.id},{subconstituencyID:req.body.subconstituecnyID}]
+            $or:[{_id: req.body.id},{subconstituencyID:req.body.subconstituencyID}]
         },
         req.body,
         {
@@ -276,9 +276,10 @@ exports.updateSubconstituency = asyncHandler(async (req, res, next) => {
 })
 
 exports.toggleSubconstituencyState =  asyncHandler(async (req, res, next) => {
-    const updatedSubconstituencyState = await Bureau.findOneAndUpdate(
+
+    const updatedSubconstituencyState = await Subconstituency.findOneAndUpdate(
         {
-            $or:[{_id: req.body.id},{subconstituencyID:req.body.subconstituecnyID}]
+            $or:[{_id: req.body.id},{subconstituencyID:req.body.subconstituencyID}]
         },
         {
             $set: { state: req.body.state }
@@ -293,7 +294,7 @@ exports.toggleSubconstituencyState =  asyncHandler(async (req, res, next) => {
 
         return next(
             new ErrorResponse(
-                `Subconstituency under this id ${req.body.id ? req.body.id : req.body.subconstituecnyID} was not found`,
+                `Subconstituency under this id ${req.body.id ? req.body.id : req.body.subconstituencyID} was not found`,
                 404
             )
         )
