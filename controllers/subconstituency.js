@@ -49,7 +49,7 @@ exports.getSubconstituencyByElectionID = asyncHandler(async (req, res, next) => 
     let results = await Election.aggregate([
 
         {
-            $match: { "_id": mongoose.Types.ObjectId(req.body.electionID), }
+            $match: { "_id": mongoose.Types.ObjectId(req.body.electionID)}
         },
         
         {
@@ -234,7 +234,7 @@ exports.getSubconstituencyByBureauID = asyncHandler(async (req, res, next) => {
     if (!results || results.length === 0) {
         return next(
             new ErrorResponse(
-                `Subconstituency under this Constituency id ${req.body.id ? req.body.id : req.body.constituencyID} was not found`,
+                `Subconstituency under this Bureau id ${req.body.id ? req.body.id : req.body.constituencyID} was not found`,
                 404
             )
         )

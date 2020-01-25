@@ -50,16 +50,17 @@ describe('', () => {
 
         const createConstituencyRequest = await request(app).post('/api/v1/constituency/').send(newConstituency)
         constituencyID = createConstituencyRequest.body.data._id
+        
     })
 
 
-    it('should create a new constituency', async () => {
+    it('should create a new subconstituency', async () => {
 
         const newSubconstituency = {
             subconstituencyID: Math.floor((Math.random() * 100000000) + 1),
             arabicName: "تاحوراء",
             englishName: "Tajoura",
-            subconstituecnyID: constituencyID,
+            constituencyID: constituencyID,
             bureauID: bureauID,
             electionID: electionID
         }
@@ -69,6 +70,8 @@ describe('', () => {
             .send(newSubconstituency)
             .expect(201)
             .expect('Content-Type', /json/)
+
+            console.error(response.body, "\n",constituencyID)
 
         subconstituencyID = response.body.data.subconstituencyID;
         generatedSubconsitiuencyID = response.body.data._id;
@@ -185,7 +188,7 @@ describe('', () => {
         expect(response.body.data).to.be.an('object')
         expect(response.body.data.arabicName).to.be.eql(updatedSubconstituency.arabicName)
         expect(response.body.data.englishName).to.be.eql(updatedSubconstituency.englishName)
-        expect(response.body.data.constituencyID).to.be.eql(updatedSubconstituency.constituencyID)
+        expect(response.body.data._id).to.be.eql(updatedSubconstituency.id)
         response.body.data.should.include.keys(["arabicName", "englishName", "subconstituencyID", "state"]);
     })
 
@@ -232,7 +235,7 @@ describe('', () => {
         expect(response.body.data).to.be.an('object')
         expect(response.body.data.arabicName).to.be.eql(updatedSubconstituency.arabicName)
         expect(response.body.data.englishName).to.be.eql(updatedSubconstituency.englishName)
-        expect(response.body.data.constituencyID).to.be.eql(updatedSubconstituency.constituencyID)
+        expect(response.body.data.subconstituencyID).to.be.eql(updatedSubconstituency.subconstituencyID)
         response.body.data.should.include.keys(["arabicName", "englishName", "subconstituencyID", "state"]);
     })
 
@@ -323,6 +326,89 @@ describe('', () => {
         assert.equal(response.body.error, "Subconstituency under this id 5e1bb5e507516221677406d3 was not found")
         response.body.should.include.keys(["error", "success"]);
 
+    })
+
+    it('should get all subconstituencies', async () => {
+
+
+        const response = await request(app)
+            .get('/api/v1/subconstituency/subconstituencies')
+            .expect(200)
+            .expect('Content-Type', /json/)
+
+        expect(response.status).to.equal(200)
+        expect(response.body.subconstituencies).to.be.not.empty
+        expect(response.body.subconstituencies).to.be.an('array')
+        expect(response.body.subconstituencies[0]).to.be.an('object')
+        expect(response.body.subconstituencies).to.not.be.null;
+        expect(response.body.subconstituencies).to.not.be.undefined;
+
+    })
+
+    it('should get subconstituencies based on selected Election', async () => {
+
+
+        const response = await request(app)
+            .get('/api/v1/subconstituency/subconstituenciesByElection')
+            .expect(200)
+            .send({electionID})
+            .expect('Content-Type', /json/)
+
+            expect(response.status).to.equal(200)
+            expect(response.body.data).to.not.be.null;
+            expect(response.body.data).to.not.be.undefined;
+            expect(response.body.data.state).to.be.true
+            response.body.data.should.include.keys(["startDate", "endDate", "electionType", "state","subconstituencies"]);
+            expect(response.body.data.subconstituencies).to.be.not.empty
+            expect(response.body.data.subconstituencies).to.be.an('array')
+            expect(response.body.data.subconstituencies).to.not.be.null;
+            expect(response.body.data.subconstituencies).to.not.be.undefined;
+            expect(response.body.data.subconstituencies[0]).to.be.an('object')
+            response.body.data.subconstituencies[0].should.include.keys(["id" ,"arabicName", "englishName", "subconstituencyID"]);
+    })
+
+    it('should get subconstituencies based on selected Bureau', async () => {
+
+
+        const response = await request(app)
+            .get('/api/v1/subconstituency/subconstituenciesByBureau')
+            .expect(200)
+            .send({id:bureauID})
+            .expect('Content-Type', /json/)
+
+            expect(response.status).to.equal(200)
+            expect(response.body.data).to.not.be.null;
+            expect(response.body.data).to.not.be.undefined;
+            expect(response.body.data.state).to.be.true
+            response.body.data.should.include.keys(["arabicName", "englishName", "state","subconstituencies"]);
+            expect(response.body.data.subconstituencies).to.be.not.empty
+            expect(response.body.data.subconstituencies).to.be.an('array')
+            expect(response.body.data.subconstituencies).to.not.be.null;
+            expect(response.body.data.subconstituencies).to.not.be.undefined;
+            expect(response.body.data.subconstituencies[0]).to.be.an('object')
+            response.body.data.subconstituencies[0].should.include.keys(["id" ,"arabicName", "englishName", "subconstituencyID"]);
+    })
+
+    it('should get subconstituencies based on selected Constituency', async () => {
+
+
+        const response = await request(app)
+            .get('/api/v1/subconstituency/getSubconstituencyByConstituencyID')
+            .expect(200)
+            .send({id:bureauID})
+            .expect('Content-Type', /json/)
+
+            expect(response.status).to.equal(200)
+            expect(response.body.data).to.not.be.null;
+            expect(response.body.data).to.not.be.undefined;
+            expect(response.body.data.state).to.be.true
+            response.body.data.should.include.keys(["arabicName", "englishName", "state","subconstituencies"]);
+            expect(response.body.data.subconstituencies).to.be.not.empty
+            expect(response.body.data.subconstituencies).to.be.an('array')
+            expect(response.body.data.subconstituencies).to.not.be.null;
+            expect(response.body.data.subconstituencies).to.not.be.undefined;
+            expect(response.body.data.subconstituencies[0]).to.be.an('object')
+            response.body.data.subconstituencies[0].should.include.keys(["id" ,"arabicName", "englishName", "subconstituencyID"]);
     })
 
 })

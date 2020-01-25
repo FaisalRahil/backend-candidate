@@ -8,7 +8,7 @@ const SubconstituencySchema  = mongoose.Schema({
         require: [true, ""],
         index: true,
     },
-    consistuencyID: {
+    constituencyID: {
         type: mongoose.Schema.Types.ObjectId,
         require: [true, ""]
     },
@@ -26,7 +26,7 @@ const SubconstituencySchema  = mongoose.Schema({
     },
     electionID:{
         type:mongoose.Schema.Types.ObjectId,
-        unique: true,
+        require: [true, ""]
     },
     state:{
         type:Boolean,
