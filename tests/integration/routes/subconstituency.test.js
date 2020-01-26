@@ -6,7 +6,7 @@ chai.should();
 let app = require("../../../server")
 
 
-describe('', () => {
+describe('Subconstituency route test', () => {
 
     let generatedSubconsitiuencyID = undefined
     let subconstituencyID = undefined
@@ -393,16 +393,16 @@ describe('', () => {
 
 
         const response = await request(app)
-            .get('/api/v1/subconstituency/getSubconstituencyByConstituencyID')
+            .get('/api/v1/subconstituency/subconstituenciesByConstituency')
             .expect(200)
-            .send({id:bureauID})
+            .send({id:constituencyID})
             .expect('Content-Type', /json/)
 
             expect(response.status).to.equal(200)
             expect(response.body.data).to.not.be.null;
             expect(response.body.data).to.not.be.undefined;
             expect(response.body.data.state).to.be.true
-            response.body.data.should.include.keys(["arabicName", "englishName", "state","subconstituencies"]);
+            response.body.data.should.include.keys(["arabicName", "englishName", "state","constituencyID","subconstituencies"]);
             expect(response.body.data.subconstituencies).to.be.not.empty
             expect(response.body.data.subconstituencies).to.be.an('array')
             expect(response.body.data.subconstituencies).to.not.be.null;
