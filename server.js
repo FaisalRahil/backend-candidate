@@ -26,6 +26,7 @@ const region = require('./routes/region')
 const bureau = require("./routes/bureau")
 const constituency = require("./routes/constituency")
 const subconstituency = require("./routes/subconstituency")
+const user = require("./routes/user")
 const courses = require("./routes/courses");
 
 
@@ -35,8 +36,8 @@ app.use("/api/v1/election", election);
 app.use("/api/v1/region", region);
 app.use("/api/v1/bureau", bureau);
 app.use("/api/v1/constituency", constituency);
-app.use("/api/v1/constituency", constituency);
 app.use("/api/v1/subconstituency", subconstituency);
+app.use("/api/v1/user", user);
 
 app.use(errorHandler);
 

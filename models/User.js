@@ -20,7 +20,7 @@ const UserSchema  = mongoose.Schema({
         ]
     },
     password:{
-        type:mongoose.Schema.Types.ObjectId,
+        type:String,
         require: true,
     },
     salt:{

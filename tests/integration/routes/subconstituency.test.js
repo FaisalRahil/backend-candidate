@@ -71,8 +71,6 @@ describe('Subconstituency route test', () => {
             .expect(201)
             .expect('Content-Type', /json/)
 
-            console.error(response.body, "\n",constituencyID)
-
         subconstituencyID = response.body.data.subconstituencyID;
         generatedSubconsitiuencyID = response.body.data._id;
 
