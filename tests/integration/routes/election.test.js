@@ -10,10 +10,24 @@ const app = require("../../../server");
 describe('election route test', () => {
 
     let electionID = undefined;
+    let jwToken = undefined
+
+    before(async ()=> {
+        const response = await request(app)
+        .get('/api/v1/user/')
+        .send({
+            email:"root@hnec.ly",
+            password:"aaaaaa"
+        })
+       
+        jwToken = 'token ' + response.body.token;
+    })
+
     it('should not response on requesting non-existing route', async () => {
 
         const response = await request(app)
             .get('/api/v1/election/election')
+            .set({'Authorization':jwToken})
             .expect(404)
             .expect('Content-Type', 'text/html; charset=utf-8')
 
@@ -33,6 +47,7 @@ describe('election route test', () => {
 
         const response = await request(app)
             .post('/api/v1/election/')
+            .set({'Authorization':jwToken})
             .send(newElection)
             .expect(201)
             .expect('Content-Type', /json/)
@@ -56,9 +71,9 @@ describe('election route test', () => {
     it('should get an existing Election', async () => {
 
 
-
         const response = await request(app)
             .get('/api/v1/election/')
+            .set({'Authorization':jwToken})
             .send({ electionID: `${electionID}` })
             .expect(200)
             .expect('Content-Type', /json/)
@@ -74,14 +89,13 @@ describe('election route test', () => {
 
     it('should not get non-existing Election', async () => {
 
-        try {
+       
             const response = await request(app)
                 .get('/api/v1/election/')
+                .set({'Authorization':jwToken})
                 .send({ electionID: `5e195075705b65d4a1c52fb4` })
                 .expect(404)
                 .expect('Content-Type', /json/)
-
-
 
             expect(response.status, colors.blue('status should be 404')).to.equal(404)
             expect(response.body).to.not.be.null;
@@ -89,12 +103,6 @@ describe('election route test', () => {
             expect(response.body.success).to.be.false;
             expect(response.body.error).to.not.be.null;
             expect(response.body.error).to.not.be.undefined;
-
-
-        } catch{
-
-        }
-
 
 
     })
@@ -110,6 +118,7 @@ describe('election route test', () => {
 
         const response = await request(app)
             .put('/api/v1/election/')
+            .set({'Authorization':jwToken})
             .send(updateElection)
             .expect(200)
             .expect('Content-Type', /json/)
@@ -129,8 +138,6 @@ describe('election route test', () => {
 
     it('should not update non-existing Election', async () => {
 
-        try {
-
             const updateElection = {
                 electionID: `5e195075705b65d4a1c52fb4`,
                 startDate: '2018-04-13',
@@ -140,6 +147,7 @@ describe('election route test', () => {
 
             const response = await request(app)
                 .put('/api/v1/election/')
+                .set({'Authorization':jwToken})
                 .send(updateElection)
                 .expect(404)
                 .expect('Content-Type', /json/)
@@ -153,12 +161,6 @@ describe('election route test', () => {
             expect(response.body.error).to.not.be.undefined;
 
 
-
-        } catch{
-
-        }
-
-
     })
 
     it('should deactivate an existing Election', async () => {
@@ -170,6 +172,7 @@ describe('election route test', () => {
 
         const response = await request(app)
             .put('/api/v1/election/toggleElectionState')
+            .set({'Authorization':jwToken})
             .send(deactivateElection)
             .expect(200)
             .expect('Content-Type', /json/)
@@ -197,12 +200,11 @@ describe('election route test', () => {
 
         const response = await request(app)
             .put('/api/v1/election/toggleElectionState')
+            .set({'Authorization':jwToken})
             .send(deactivateElection)
             .expect(200)
             .expect('Content-Type', /json/)
 
-
-            console.error(response.body.data)
 
         expect(response.status, colors.blue('status should be 200')).to.equal(200)
         expect(response.body).to.not.be.null;
@@ -225,6 +227,7 @@ describe('election route test', () => {
 
         const response = await request(app)
             .put('/api/v1/election/toggleElectionState')
+            .set({'Authorization':jwToken})
             .send(deactivateElection)
             .expect(404)
             .expect('Content-Type', /json/)
@@ -245,6 +248,7 @@ describe('election route test', () => {
 
         const response = await request(app)
             .get('/api/v1/election/elections')
+            .set({'Authorization':jwToken})
             .expect(200)
             .expect('Content-Type', 'application/json; charset=utf-8')
 
