@@ -10,6 +10,13 @@ exports.getEelections = asyncHandler(async (req, res, next) => {
 
     jwt.verify(req.token, process.env.JWT_SECRET_KEY, async (error, authdata) => {
 
+        if(error) return new next(
+            new ErrorResponse(
+                `Bad toekn format`,
+                400
+            )
+        ) 
+
         if (typeof authdata !== 'undefined' && authdata.userType.typeID == 1) {
             const elections = await Election.find()
             res.status(200).json({ elections })
@@ -33,6 +40,13 @@ exports.getElection = asyncHandler(async (req, res, next) => {
 
     jwt.verify(req.token, process.env.JWT_SECRET_KEY, async (error, authdata) => {
 
+        if(error) return new next(
+            new ErrorResponse(
+                `Bad toekn format`,
+                400
+            )
+        ) 
+
         if (typeof authdata !== 'undefined' && authdata.userType.typeID == 1) {
             const selectedElection = await Election.findById(req.body.electionID)
 
@@ -46,7 +60,6 @@ exports.getElection = asyncHandler(async (req, res, next) => {
                 )
 
             }
-
 
 
             return res.status(200).json({
@@ -73,6 +86,13 @@ exports.getElection = asyncHandler(async (req, res, next) => {
 exports.createElection = asyncHandler(async (req, res, next) => {
 
     jwt.verify(req.token, process.env.JWT_SECRET_KEY, async (error, authdata) => {
+
+        if(error) return new next(
+            new ErrorResponse(
+                `Bad toekn format`,
+                400
+            )
+        ) 
 
         if (typeof authdata !== 'undefined' && authdata.userType.typeID == 1) {
 
@@ -101,6 +121,13 @@ exports.updateElection = asyncHandler(async (req, res, next) => {
 
 
     jwt.verify(req.token, process.env.JWT_SECRET_KEY, async (error, authdata) => {
+
+        if(error) return new next(
+            new ErrorResponse(
+                `Bad toekn format`,
+                400
+            )
+        ) 
 
         if (typeof authdata !== 'undefined' && authdata.userType.typeID == 1) {
 
@@ -141,6 +168,13 @@ exports.updateElection = asyncHandler(async (req, res, next) => {
 exports.toggleElectionState = asyncHandler(async (req, res, next) => {
 
     jwt.verify(req.token, process.env.JWT_SECRET_KEY, async (error, authdata) => {
+
+        if(error) return new next(
+            new ErrorResponse(
+                `Bad toekn format`,
+                400
+            )
+        ) 
 
         if (typeof authdata !== 'undefined' && authdata.userType.typeID == 1) {
 
