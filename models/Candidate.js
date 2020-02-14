@@ -72,7 +72,7 @@ const CandidateSchema = new mongoose.Schema({
         name:String
         
     }],
-    reservedSeat:{
+    seatType:{
 
         type:String,
         enum:['Woman','Special Ethnic Group', 'Public', 'Private']

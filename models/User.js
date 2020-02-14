@@ -31,8 +31,26 @@ const UserSchema  = mongoose.Schema({
         type:mongoose.Schema.Types.ObjectId,
         require: true,
     },
-    level:{
-        type:Number,
+    userType:{
+        type:{
+            typeID:Number,
+            userType:String
+        },
+        enum:[
+            {
+                typeID:1,
+                userType:"SuperUser"
+            },
+            {
+                typeID:2,
+                userType:"BureauUser"
+            },
+            ,
+            {
+                typeID:3,
+                userType:"CandidateUser"
+            },
+        ]
     },
     state:{
         type:Boolean,

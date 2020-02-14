@@ -10,13 +10,14 @@ const asyncHandler = require("../middleware/async");
 const User = require("../models/User");
 const Bureau = require("../models/Bureau");
 
-//middleware
-const authenticat = require('../middleware/authentication')
+require("dotenv").config()
+
+
 
 
 exports.creatUser = asyncHandler(async (req, res, next) => {
 
-    jwt.verify(req.token, 'superunknownsecrectkey', async (error, authdata) => {
+    jwt.verify(req.token, process.env.JWT_SECRET_KEY, async (error, authdata) => {
 
         if (authData.level == 1) {
             req.body.password = bcrypt.hashSync(req.body.password, req.body.salt)
@@ -43,11 +44,11 @@ exports.getUser = asyncHandler(async (req, res, next) => {
 
 
 
-    const user = await User.findOne({ email: req.body.email }).select({ _id: 1, name: 1, password: 1, level: 1, salt: 1 })
+    const user = await User.findOne({ email: req.body.email }).select({ _id: 1, name: 1, password: 1, userType: 1, salt: 1 })
 
     if (await bcrypt.compare(req.body.password, user.password)) {
 
-        jwt.sign({ id: user._id, name: user.name, level: user.level }, 'superunknownsecrectkey', { expiresIn: '4h' }, (error, token) => {
+        jwt.sign({ id: user._id, name: user.name, userType: user.userType }, process.env.JWT_SECRET_KEY , { expiresIn: '4h' }, (error, token) => {
             res.status(201).json({
                 success: true,
                 token
@@ -75,7 +76,7 @@ exports.getUser = asyncHandler(async (req, res, next) => {
 
 exports.getUsers = asyncHandler(async (req, res, next) => {
 
-    jwt.verify(req.token, 'superunknownsecrectkey', async (error, data) => {
+    jwt.verify(req.token, process.env.JWT_SECRET_KEY , async (error, data) => {
 
         if (error) {
 
@@ -98,7 +99,7 @@ exports.getUsers = asyncHandler(async (req, res, next) => {
 
 exports.updateUser = asyncHandler(async (req, res, next) => {
 
-    jwt.verify(req.token, 'superunknownsecrectkey', async (error, authData) => {
+    jwt.verify(req.token, process.env.JWT_SECRET_KEY , async (error, authData) => {
 
         const updatingUser = await User.updateOne({ _id: authData.id }, req.body)
         res.status(200).json({ updatingUser })
@@ -109,7 +110,7 @@ exports.updateUser = asyncHandler(async (req, res, next) => {
 
 exports.changeUserState = asyncHandler(async (req, res, next) => {
 
-    jwt.verify(req.token, 'superunknownsecrectkey', async (error, authData) => {
+    jwt.verify(req.token, process.env.JWT_SECRET_KEY , async (error, authData) => {
 
         if (authData.level == 1) {
 
