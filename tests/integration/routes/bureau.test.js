@@ -12,8 +12,18 @@ describe('bureau route test', () => {
     let generatedBureauID = undefined
     let regionID = undefined
     let electionID = undefined
+    let jwToken = undefined
 
     before(async () => {
+
+        const response = await request(app)
+        .get('/api/v1/user/')
+        .send({
+            email:"root@hnec.ly",
+            password:"aaaaaa"
+        })
+       
+        jwToken = 'token ' + response.body.token;
 
         const newElection = {
             startDate: '2016-04-13',
@@ -21,7 +31,7 @@ describe('bureau route test', () => {
             electionType: 'Parliament Election',
         }
 
-        const createElectionRequest = await request(app).post('/api/v1/election/').send(newElection)
+        const createElectionRequest = await request(app).post('/api/v1/election/').set({'Authorization':jwToken}).send(newElection)
         electionID = createElectionRequest.body.data._id
 
         const newRegion = {
@@ -33,7 +43,7 @@ describe('bureau route test', () => {
 
         }
 
-        const createRegionRequest = await request(app).post('/api/v1/region/').send(newRegion)
+        const createRegionRequest = await request(app).post('/api/v1/region/').set({'Authorization':jwToken}).send(newRegion)
         regionID = createRegionRequest.body.data._id
 
     })
@@ -50,6 +60,7 @@ describe('bureau route test', () => {
 
         const response = await request(app)
             .post('/api/v1/bureau')
+            .set({'Authorization':jwToken})
             .send(newBureau)
             .expect(201)
             .expect('Content-Type', /json/)
@@ -77,6 +88,7 @@ describe('bureau route test', () => {
 
         let response = await request(app)
             .get('/api/v1/bureau/')
+            .set({'Authorization':jwToken})
             .send({ id: generatedBureauID })
             .expect(200)
             .expect('Content-Type', /json/)
@@ -93,6 +105,7 @@ describe('bureau route test', () => {
 
         const response = await request(app)
             .get('/api/v1/bureau/')
+            .set({'Authorization':jwToken})
             .send({ id: "5e1bb5e507516221677406d3" })
             .expect(404)
             .expect('Content-Type', /json/)
@@ -114,6 +127,7 @@ describe('bureau route test', () => {
 
         let response = await request(app)
             .get('/api/v1/bureau/')
+            .set({'Authorization':jwToken})
             .send({ bureauID: bureauID })
             .expect(200)
             .expect('Content-Type', /json/)
@@ -130,6 +144,7 @@ describe('bureau route test', () => {
 
         const response = await request(app)
             .get('/api/v1/bureau/')
+            .set({'Authorization':jwToken})
             .send({ bureauID: 473467892734893 })
             .expect(404)
             .expect('Content-Type', /json/)
@@ -158,6 +173,7 @@ describe('bureau route test', () => {
 
         const response = await request(app)
             .put('/api/v1/bureau/')
+            .set({'Authorization':jwToken})
             .send(updatedBureau)
             .expect(200)
             .expect('Content-Type', /json/)
@@ -187,6 +203,7 @@ describe('bureau route test', () => {
 
         const response = await request(app)
             .put('/api/v1/bureau/')
+            .set({'Authorization':jwToken})
             .send(updatedBureau)
             .expect(404)
             .expect('Content-Type', /json/)
@@ -211,6 +228,7 @@ describe('bureau route test', () => {
 
         const response = await request(app)
             .put('/api/v1/bureau/')
+            .set({'Authorization':jwToken})
             .send(updatedBureau)
             .expect(200)
             .expect('Content-Type', /json/)
@@ -237,6 +255,7 @@ describe('bureau route test', () => {
 
         const response = await request(app)
             .put('/api/v1/bureau/')
+            .set({'Authorization':jwToken})
             .send(updatedBureau)
             .expect(404)
             .expect('Content-Type', /json/)
@@ -261,6 +280,7 @@ describe('bureau route test', () => {
     
         const response = await request(app)
             .put('/api/v1/bureau/toggleBureauState')
+            .set({'Authorization':jwToken})
             .send(deactivateBureau)
             .expect(200)
             .expect('Content-Type', /json/)
@@ -283,6 +303,7 @@ describe('bureau route test', () => {
 
         const response = await request(app)
             .put('/api/v1/bureau/toggleBureauState')
+            .set({'Authorization':jwToken})
             .send(activateBureau)
             .expect(200)
             .expect('Content-Type', /json/)
@@ -306,6 +327,7 @@ describe('bureau route test', () => {
 
         const response = await request(app)
             .put('/api/v1/bureau/toggleBureauState')
+            .set({'Authorization':jwToken})
             .send(deactivateBureau)
             .expect(404)
             .expect('Content-Type', /json/)
@@ -324,6 +346,7 @@ describe('bureau route test', () => {
 
         const response = await request(app)
             .get('/api/v1/bureau/bureaus')
+            .set({'Authorization':jwToken})
             .expect(200)
             .expect('Content-Type', /json/)
 
@@ -341,6 +364,7 @@ describe('bureau route test', () => {
 
         const response = await request(app)
             .get('/api/v1/bureau/getBureausBasedOnRegion')
+            .set({'Authorization':jwToken})
             .send({ id: regionID })
             .expect(200)
             .expect('Content-Type', /json/)
@@ -362,6 +386,7 @@ describe('bureau route test', () => {
 
         const response = await request(app)
             .get('/api/v1/bureau/getBureausBasedOnRegion')
+            .set({'Authorization':jwToken})
             .send({ id: "5e1bb5e507516221677406d3" })
             .expect(404)
             .expect('Content-Type', /json/)
@@ -378,6 +403,7 @@ describe('bureau route test', () => {
 
         const response = await request(app)
             .get('/api/v1/bureau/getBureausBasedOnElection')
+            .set({'Authorization':jwToken})
             .send({ id:electionID })
             .expect(200)
             .expect('Content-Type', /json/)
@@ -400,6 +426,7 @@ describe('bureau route test', () => {
 
         const response = await request(app)
             .get('/api/v1/bureau/getBureausBasedOnElection')
+            .set({'Authorization':jwToken})
             .send({ id: "5e1bb5e507516221677406d3" })
             .expect(404)
             .expect('Content-Type', /json/)

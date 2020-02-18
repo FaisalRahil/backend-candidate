@@ -1,8 +1,8 @@
+const jwt = require('jsonwebtoken')
+
 const ErrorResponse = require("../utils/errorResponse");
 const asyncHandler = require("../middleware/async");
 const Election = require("../models/Election");
-
-const jwt = require('jsonwebtoken')
 
 require("dotenv").config()
 
@@ -12,7 +12,7 @@ exports.getEelections = asyncHandler(async (req, res, next) => {
 
         if(error) return new next(
             new ErrorResponse(
-                `Bad toekn format`,
+                `invalid token`,
                 400
             )
         ) 
@@ -42,7 +42,7 @@ exports.getElection = asyncHandler(async (req, res, next) => {
 
         if(error) return new next(
             new ErrorResponse(
-                `Bad toekn format`,
+                `invalid token`,
                 400
             )
         ) 
@@ -89,7 +89,7 @@ exports.createElection = asyncHandler(async (req, res, next) => {
 
         if(error) return new next(
             new ErrorResponse(
-                `Bad toekn format`,
+                `invalid token`,
                 400
             )
         ) 
@@ -124,7 +124,7 @@ exports.updateElection = asyncHandler(async (req, res, next) => {
 
         if(error) return new next(
             new ErrorResponse(
-                `Bad toekn format`,
+                `invalid token`,
                 400
             )
         ) 
@@ -171,7 +171,7 @@ exports.toggleElectionState = asyncHandler(async (req, res, next) => {
 
         if(error) return new next(
             new ErrorResponse(
-                `Bad toekn format`,
+                `invalid token`,
                 400
             )
         ) 
