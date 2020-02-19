@@ -15,9 +15,19 @@ describe('Constituency route test', () => {
     let electionID = undefined
     let regionID = undefined
     let bureauID = undefined
+    let jwToken = undefined
 
 
     before(async () => {
+
+        const response = await request(app)
+        .get('/api/v1/user/')
+        .send({
+            email:"root@hnec.ly",
+            password:"aaaaaa"
+        })
+       
+        jwToken = 'token ' + response.body.token;
 
         const newElection = {
             startDate: '2016-04-13',
@@ -25,7 +35,7 @@ describe('Constituency route test', () => {
             electionType: 'Parliament Election',
         }
 
-        const createElectionRequest = await request(app).post('/api/v1/election/').send(newElection)
+        const createElectionRequest = await request(app).post('/api/v1/election/').set({'Authorization':jwToken}).send(newElection)
         electionID = createElectionRequest.body.data._id
 
         const newRegion = {
@@ -37,7 +47,7 @@ describe('Constituency route test', () => {
 
         }
 
-        const createRegionRequest = await request(app).post('/api/v1/region/').send(newRegion)
+        const createRegionRequest = await request(app).post('/api/v1/region/').set({'Authorization':jwToken}).send(newRegion)
         regionID = createRegionRequest.body.data._id
 
         const newBureau = {
@@ -49,7 +59,7 @@ describe('Constituency route test', () => {
 
         }
 
-        const createBureauRequest = await request(app).post('/api/v1/bureau/').send(newBureau)
+        const createBureauRequest = await request(app).post('/api/v1/bureau/').set({'Authorization':jwToken}).send(newBureau)
         bureauID = createBureauRequest.body.data._id
 
 
@@ -68,6 +78,7 @@ describe('Constituency route test', () => {
 
         const response = await request(app)
             .post('/api/v1/constituency')
+            .set({'Authorization':jwToken})
             .send(newConstituency)
             .expect(201)
             .expect('Content-Type', /json/)
@@ -91,6 +102,7 @@ describe('Constituency route test', () => {
 
         const response = await request(app)
             .get('/api/v1/constituency')
+            .set({'Authorization':jwToken})
             .send({ constituencyID })
             .expect(200)
             .expect('Content-Type', /json/)
@@ -108,6 +120,7 @@ describe('Constituency route test', () => {
 
         const response = await request(app)
             .get('/api/v1/constituency')
+            .set({'Authorization':jwToken})
             .send({ constituencyID: 473467892734893 })
             .expect(404)
             .expect('Content-Type', /json/)
@@ -128,6 +141,7 @@ describe('Constituency route test', () => {
 
         const response = await request(app)
             .get('/api/v1/constituency')
+            .set({'Authorization':jwToken})
             .send({ id: generatedConstituencyID })
             .expect(200)
             .expect('Content-Type', /json/)
@@ -144,6 +158,7 @@ describe('Constituency route test', () => {
 
         const response = await request(app)
             .get('/api/v1/constituency')
+            .set({'Authorization':jwToken})
             .send({ id: "5e195075705b65d4a1c52fb4" })
             .expect(404)
             .expect('Content-Type', /json/)
@@ -171,6 +186,7 @@ describe('Constituency route test', () => {
 
         const response = await request(app)
             .put('/api/v1/constituency')
+            .set({'Authorization':jwToken})
             .send(updatedConstituency)
             .expect(200)
             .expect('Content-Type', /json/)
@@ -196,6 +212,7 @@ describe('Constituency route test', () => {
 
         const response = await request(app)
             .put('/api/v1/constituency')
+            .set({'Authorization':jwToken})
             .send(updatedConstituency)
             .expect(404)
             .expect('Content-Type', /json/)
@@ -221,6 +238,7 @@ describe('Constituency route test', () => {
 
         const response = await request(app)
             .put('/api/v1/constituency')
+            .set({'Authorization':jwToken})
             .send(updatedConstituency)
             .expect(200)
             .expect('Content-Type', /json/)
@@ -248,6 +266,7 @@ describe('Constituency route test', () => {
 
         const response = await request(app)
             .put('/api/v1/constituency')
+            .set({'Authorization':jwToken})
             .send(updatedConstituency)
             .expect(404)
             .expect('Content-Type', /json/)
@@ -273,6 +292,7 @@ describe('Constituency route test', () => {
 
         const response = await request(app)
             .put('/api/v1/constituency/toggleConstituencyState')
+            .set({'Authorization':jwToken})
             .send(deactivateConstituency)
             .expect(200)
             .expect('Content-Type', /json/)
@@ -295,6 +315,7 @@ describe('Constituency route test', () => {
 
         const response = await request(app)
             .put('/api/v1/constituency/toggleConstituencyState')
+            .set({'Authorization':jwToken})
             .send(activateConstituency)
             .expect(200)
             .expect('Content-Type', /json/)
@@ -316,6 +337,7 @@ describe('Constituency route test', () => {
 
         const response = await request(app)
             .put('/api/v1/constituency/toggleConstituencyState')
+            .set({'Authorization':jwToken})
             .send(deactivateConstituency)
             .expect(404)
             .expect('Content-Type', /json/)
@@ -337,6 +359,7 @@ describe('Constituency route test', () => {
 
         const response = await request(app)
             .get('/api/v1/constituency/constituencies')
+            .set({'Authorization':jwToken})
             .expect(200)
             .expect('Content-Type', /json/)
 
@@ -354,6 +377,7 @@ describe('Constituency route test', () => {
 
         const response = await request(app)
             .get('/api/v1/constituency/getConstituenciesBasedOnRegionID')
+            .set({'Authorization':jwToken})
             .expect(200)
             .send({id:regionID})
             .expect('Content-Type', /json/)
@@ -377,6 +401,7 @@ describe('Constituency route test', () => {
 
         const response = await request(app)
         .get('/api/v1/constituency/getConstituenciesBasedOnElectionID')
+        .set({'Authorization':jwToken})
         .send({electionID})
         .expect(200)
         .expect('Content-Type', /json/)
@@ -399,6 +424,7 @@ describe('Constituency route test', () => {
 
         const response = await request(app)
         .get('/api/v1/constituency/getConstituenciesBasedOnBureauID')
+        .set({'Authorization':jwToken})
         .send({id:bureauID})
         .expect(200)
         .expect('Content-Type', /json/)
