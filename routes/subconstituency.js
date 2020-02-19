@@ -1,6 +1,8 @@
 const express = require('express')
 const router = express.Router()
 
+const authonticate = require('../middleware/authentication')
+
 const { getSubconstituencies,
     getSubconstituency,
     createSubconstituency,
@@ -10,11 +12,11 @@ const { getSubconstituencies,
     getSubconstituencyByBureauID,
     getSubconstituencyByConstituencyID } = require('../controllers/subconstituency')
 
-router.route('/subconstituencies').get(getSubconstituencies)
-router.route('/').post(createSubconstituency).get(getSubconstituency).put(updateSubconstituency)
-router.route('/toggleSubconstituencyState').put(toggleSubconstituencyState)
-router.route('/subconstituenciesByElection').get(getSubconstituencyByElectionID)
-router.route('/subconstituenciesByBureau').get(getSubconstituencyByBureauID)
-router.route('/subconstituenciesByConstituency').get(getSubconstituencyByConstituencyID)
+router.route('/subconstituencies').get(authonticate, getSubconstituencies)
+router.route('/').post(authonticate, createSubconstituency).get(authonticate, getSubconstituency).put(authonticate, updateSubconstituency)
+router.route('/toggleSubconstituencyState').put(authonticate, toggleSubconstituencyState)
+router.route('/subconstituenciesByElection').get(authonticate, getSubconstituencyByElectionID)
+router.route('/subconstituenciesByBureau').get(authonticate, getSubconstituencyByBureauID)
+router.route('/subconstituenciesByConstituency').get(authonticate, getSubconstituencyByConstituencyID)
 
 module.exports = router;

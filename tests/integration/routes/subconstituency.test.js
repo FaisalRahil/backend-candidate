@@ -13,8 +13,19 @@ describe('Subconstituency route test', () => {
     let electionID = undefined
     let bureauID = undefined
     let constituencyID = undefined
+    let jwToken = undefined
 
     before(async () => {
+
+        const response = await request(app)
+        .get('/api/v1/user/')
+        .send({
+            email:"root@hnec.ly",
+            password:"aaaaaa"
+        })
+       
+        jwToken = 'token ' + response.body.token;
+
 
         const newElection = {
             startDate: '2016-04-13',
@@ -22,7 +33,7 @@ describe('Subconstituency route test', () => {
             electionType: 'Parliament Election',
         }
 
-        const createElectionRequest = await request(app).post('/api/v1/election/').send(newElection)
+        const createElectionRequest = await request(app).post('/api/v1/election/').set({'Authorization':jwToken}).send(newElection)
         electionID = createElectionRequest.body.data._id
 
 
@@ -34,7 +45,7 @@ describe('Subconstituency route test', () => {
             regionID: "5e24af45e9ff27e41b009915"
         }
 
-        const createBureauRequest = await request(app).post('/api/v1/bureau/').send(newBureau)
+        const createBureauRequest = await request(app).post('/api/v1/bureau/').set({'Authorization':jwToken}).send(newBureau)
         bureauID = createBureauRequest.body.data._id
 
         const newConstituency = {
@@ -48,7 +59,7 @@ describe('Subconstituency route test', () => {
 
         }
 
-        const createConstituencyRequest = await request(app).post('/api/v1/constituency/').send(newConstituency)
+        const createConstituencyRequest = await request(app).post('/api/v1/constituency/').set({'Authorization':jwToken}).send(newConstituency)
         constituencyID = createConstituencyRequest.body.data._id
         
     })
@@ -67,6 +78,7 @@ describe('Subconstituency route test', () => {
 
         const response = await request(app)
             .post('/api/v1/subconstituency')
+            .set({'Authorization':jwToken})
             .send(newSubconstituency)
             .expect(201)
             .expect('Content-Type', /json/)
@@ -93,6 +105,7 @@ describe('Subconstituency route test', () => {
 
         const response = await request(app)
             .get('/api/v1/subconstituency')
+            .set({'Authorization':jwToken})
             .send({ id: generatedSubconsitiuencyID })
             .expect(200)
             .expect('Content-Type', /json/)
@@ -111,6 +124,7 @@ describe('Subconstituency route test', () => {
     it('should get a subconstituency based on subconstituencyID', async () => {
         const response = await request(app)
             .get('/api/v1/subconstituency')
+            .set({'Authorization':jwToken})
             .send({ subconstituencyID })
             .expect(200)
             .expect('Content-Type', /json/)
@@ -129,6 +143,7 @@ describe('Subconstituency route test', () => {
 
         const response = await request(app)
             .get('/api/v1/subconstituency')
+            .set({'Authorization':jwToken})
             .send({ id: "5e195075705b65d4a1c52fb4" })
             .expect(404)
             .expect('Content-Type', /json/)
@@ -149,6 +164,7 @@ describe('Subconstituency route test', () => {
 
         const response = await request(app)
             .get('/api/v1/subconstituency')
+            .set({'Authorization':jwToken})
             .send({ subconstituencyID: 473467892734893 })
             .expect(404)
             .expect('Content-Type', /json/)
@@ -175,6 +191,7 @@ describe('Subconstituency route test', () => {
 
         const response = await request(app)
             .put('/api/v1/subconstituency')
+            .set({'Authorization':jwToken})
             .send(updatedSubconstituency)
             .expect(200)
             .expect('Content-Type', /json/)
@@ -200,6 +217,7 @@ describe('Subconstituency route test', () => {
 
         const response = await request(app)
             .put('/api/v1/subconstituency')
+            .set({'Authorization':jwToken})
             .send(updatedSubconstituency)
             .expect(404)
             .expect('Content-Type', /json/)
@@ -223,6 +241,7 @@ describe('Subconstituency route test', () => {
 
         const response = await request(app)
             .put('/api/v1/subconstituency')
+            .set({'Authorization':jwToken})
             .send(updatedSubconstituency)
             .expect('Content-Type', /json/)
 
@@ -247,6 +266,7 @@ describe('Subconstituency route test', () => {
 
         const response = await request(app)
             .put('/api/v1/subconstituency')
+            .set({'Authorization':jwToken})
             .send(updatedSubconstituency)
             .expect(404)
             .expect('Content-Type', /json/)
@@ -269,6 +289,7 @@ describe('Subconstituency route test', () => {
 
         const response = await request(app)
             .put('/api/v1/subconstituency/toggleSubconstituencyState')
+            .set({'Authorization':jwToken})
             .send(deactivateSubconstituency)
             .expect(200)
             .expect('Content-Type', /json/)
@@ -291,6 +312,7 @@ describe('Subconstituency route test', () => {
 
         const response = await request(app)
             .put('/api/v1/subconstituency/toggleSubconstituencyState')
+            .set({'Authorization':jwToken})
             .send(activateSubconstituency)
             .expect(200)
             .expect('Content-Type', /json/)
@@ -312,6 +334,7 @@ describe('Subconstituency route test', () => {
 
         const response = await request(app)
             .put('/api/v1/subconstituency/toggleSubConstituencyState')
+            .set({'Authorization':jwToken})
             .send(deactivateSubconstituency)
             .expect(404)
             .expect('Content-Type', /json/)
@@ -331,6 +354,7 @@ describe('Subconstituency route test', () => {
 
         const response = await request(app)
             .get('/api/v1/subconstituency/subconstituencies')
+            .set({'Authorization':jwToken})
             .expect(200)
             .expect('Content-Type', /json/)
 
@@ -348,6 +372,7 @@ describe('Subconstituency route test', () => {
 
         const response = await request(app)
             .get('/api/v1/subconstituency/subconstituenciesByElection')
+            .set({'Authorization':jwToken})
             .expect(200)
             .send({electionID})
             .expect('Content-Type', /json/)
@@ -370,6 +395,7 @@ describe('Subconstituency route test', () => {
 
         const response = await request(app)
             .get('/api/v1/subconstituency/subconstituenciesByBureau')
+            .set({'Authorization':jwToken})
             .expect(200)
             .send({id:bureauID})
             .expect('Content-Type', /json/)
@@ -392,6 +418,7 @@ describe('Subconstituency route test', () => {
 
         const response = await request(app)
             .get('/api/v1/subconstituency/subconstituenciesByConstituency')
+            .set({'Authorization':jwToken})
             .expect(200)
             .send({id:constituencyID})
             .expect('Content-Type', /json/)
