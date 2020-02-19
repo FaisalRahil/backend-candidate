@@ -12,7 +12,7 @@ exports.getEelections = asyncHandler(async (req, res, next) => {
 
         if(error) return new next(
             new ErrorResponse(
-                `invalid token`,
+                error,
                 400
             )
         ) 
@@ -42,7 +42,7 @@ exports.getElection = asyncHandler(async (req, res, next) => {
 
         if(error) return new next(
             new ErrorResponse(
-                `invalid token`,
+                error,
                 400
             )
         ) 
@@ -89,7 +89,7 @@ exports.createElection = asyncHandler(async (req, res, next) => {
 
         if(error) return new next(
             new ErrorResponse(
-                `invalid token`,
+                error,
                 400
             )
         ) 
@@ -124,7 +124,7 @@ exports.updateElection = asyncHandler(async (req, res, next) => {
 
         if(error) return new next(
             new ErrorResponse(
-                `invalid token`,
+                error,
                 400
             )
         ) 
@@ -171,7 +171,7 @@ exports.toggleElectionState = asyncHandler(async (req, res, next) => {
 
         if(error) return new next(
             new ErrorResponse(
-                `invalid token`,
+                error,
                 400
             )
         ) 

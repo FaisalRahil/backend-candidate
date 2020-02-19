@@ -15,10 +15,20 @@ describe('region route test', () => {
     let generatedRegionID = undefined
     let regionResponse = undefined
     let electionID = undefined
+    let jwToken = undefined
 
 
 
     before(async () => {
+
+        const user = await request(app)
+        .get('/api/v1/user/')
+        .send({
+            email:"root@hnec.ly",
+            password:"aaaaaa"
+        })
+       
+        jwToken = 'token ' + user.body.token;
 
         const newElection = {
             startDate: '2016-04-13',
@@ -26,13 +36,15 @@ describe('region route test', () => {
             electionType: 'Parliament Election',
         }
 
-        let response = await request(app)
+
+        let election = await request(app)
             .post('/api/v1/election/')
+            .set({'Authorization':jwToken})
             .send(newElection)
 
 
 
-        electionID = response.body.data._id
+        electionID = election.body.data._id
 
     })
 
@@ -44,6 +56,7 @@ describe('region route test', () => {
 
         let response = await request(app)
             .post('/api/v1/region/')
+            .set({'Authorization':jwToken})
             .send(newRegion)
             .expect(201)
             .expect('Content-Type', /json/)
@@ -60,6 +73,7 @@ describe('region route test', () => {
 
 
     it('shoud create a new region', async () => {
+
         const newRegion = {
 
             arabicName: "المنطقة الغربية",
@@ -90,6 +104,7 @@ describe('region route test', () => {
 
         let response = await request(app)
             .get('/api/v1/region/')
+            .set({'Authorization':jwToken})
             .send({ id: generatedRegionID })
             .expect(200)
             .expect('Content-Type', /json/)
@@ -108,6 +123,7 @@ describe('region route test', () => {
 
         const response = await request(app)
             .get('/api/v1/region/')
+            .set({'Authorization':jwToken})
             .send({ id: "5e1bb5e507516221677406d3" })
             .expect(404)
             .expect('Content-Type', /json/)
@@ -125,6 +141,7 @@ describe('region route test', () => {
 
         let response = await request(app)
             .get('/api/v1/region/')
+            .set({'Authorization':jwToken})
             .send({ regionID })
             .expect(200)
             .expect('Content-Type', /json/)
@@ -142,6 +159,7 @@ describe('region route test', () => {
 
         const response = await request(app)
             .get('/api/v1/region/')
+            .set({'Authorization':jwToken})
             .send({ regionID: 473467892734893 })
             .expect(404)
             .expect('Content-Type', /json/)
@@ -167,6 +185,7 @@ describe('region route test', () => {
 
         const response = await request(app)
             .put('/api/v1/region/')
+            .set({'Authorization':jwToken})
             .send(updatedRegion)
             .expect(200)
             .expect('Content-Type', /json/)
@@ -193,6 +212,7 @@ describe('region route test', () => {
 
         const response = await request(app)
             .put('/api/v1/region/')
+            .set({'Authorization':jwToken})
             .send(updatedRegion)
             .expect(404)
             .expect('Content-Type', /json/)
@@ -222,6 +242,7 @@ describe('region route test', () => {
 
         const response = await request(app)
             .put('/api/v1/region/')
+            .set({'Authorization':jwToken})
             .send(updatedRegion)
             .expect(200)
             .expect('Content-Type', /json/)
@@ -250,6 +271,7 @@ describe('region route test', () => {
 
         const response = await request(app)
             .put('/api/v1/region/')
+            .set({'Authorization':jwToken})
             .send(updatedRegion)
             .expect(404)
             .expect('Content-Type', /json/)
@@ -273,6 +295,7 @@ describe('region route test', () => {
 
         const response = await request(app)
             .put('/api/v1/region/toggleRegionState')
+            .set({'Authorization':jwToken})
             .send(deactivateRegion)
             .expect(200)
             .expect('Content-Type', /json/)
@@ -297,6 +320,7 @@ describe('region route test', () => {
 
         const response = await request(app)
             .put('/api/v1/region/toggleRegionState')
+            .set({'Authorization':jwToken})
             .send(activateRegion)
             .expect(200)
             .expect('Content-Type', /json/)
@@ -321,6 +345,7 @@ describe('region route test', () => {
 
         const response = await request(app)
             .put('/api/v1/region/toggleRegionState')
+            .set({'Authorization':jwToken})
             .send(deactivateRegion)
             .expect(404)
             .expect('Content-Type', /json/)
@@ -345,6 +370,7 @@ describe('region route test', () => {
 
         const response = await request(app)
             .put('/api/v1/region/toggleRegionState')
+            .set({'Authorization':jwToken})
             .send(deactivateRegion)
             .expect(404)
             .expect('Content-Type', /json/)
@@ -363,6 +389,7 @@ describe('region route test', () => {
 
         const response = await request(app)
             .get('/api/v1/region/regions')
+            .set({'Authorization':jwToken})
             .expect(200)
             .expect('Content-Type', /json/)
 
@@ -379,6 +406,7 @@ describe('region route test', () => {
 
         const response = await request(app)
             .get('/api/v1/region/regionsByElection')
+            .set({'Authorization':jwToken})
             .send({ electionID })
             .expect(200)
             .expect('Content-Type', /json/)
@@ -399,6 +427,7 @@ describe('region route test', () => {
 
         const response = await request(app)
             .get('/api/v1/region/regionsByElection')
+            .set({'Authorization':jwToken})
             .send({ electionID: "5e1bb5e507516221677406d3" })
             .expect(404)
             .expect('Content-Type', /json/)

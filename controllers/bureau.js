@@ -16,7 +16,7 @@ exports.createBureau = asyncHandler(async (req, res, next) => {
 
         if (error) return new next(
             new ErrorResponse(
-                `invalid token`,
+                error,
                 400
             )
         )
@@ -51,7 +51,7 @@ exports.getBureau = asyncHandler(async (req, res, next) => {
 
         if (error) return new next(
             new ErrorResponse(
-                `invalid token`,
+                error,
                 400
             )
         )
@@ -96,7 +96,7 @@ exports.getBureaus = asyncHandler(async (req, res, next) => {
 
         if (error) return new next(
             new ErrorResponse(
-                `invalid token`,
+                error,
                 400
             )
         )
@@ -126,7 +126,7 @@ exports.getBureausByRegionID = asyncHandler(async (req, res, next) => {
 
         if (error) return new next(
             new ErrorResponse(
-                `invalid token`,
+                error,
                 400
             )
         )
@@ -220,7 +220,7 @@ exports.getBureausByElectionID = asyncHandler(async (req, res, next) => {
 
         if (error) return new next(
             new ErrorResponse(
-                `invalid token`,
+                error,
                 400
             )
         )
@@ -314,7 +314,7 @@ exports.updateBureau = asyncHandler(async (req, res, next) => {
 
         if (error) return new next(
             new ErrorResponse(
-                `invalid token`,
+                error,
                 400
             )
         )
@@ -366,7 +366,7 @@ exports.toggleBureauState = asyncHandler(async (req, res, next) => {
 
         if (error) return new next(
             new ErrorResponse(
-                `invalid token`,
+                error,
                 400
             )
         )
