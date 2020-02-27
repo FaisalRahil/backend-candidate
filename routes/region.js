@@ -1,13 +1,15 @@
 const express = require('express')
 const router = express.Router()
 
-const authonticate = require('../middleware/authentication')
+const authenticate = require('../middleware/authenticate')
+const authorize = require('../middleware/authorize')
+
 
 const {getRegion, getRegions, getRegionsByElectionID,createRegion, updateRegion, toggleRegionState} = require('../controllers/region')
 
-router.route('/regions').get(authonticate, getRegions)
-router.route('/').post(authonticate, createRegion).get(authonticate, getRegion).put(authonticate, updateRegion)
-router.route('/toggleRegionState').put(authonticate, toggleRegionState)
-router.route('/regionsByElection').get(authonticate, getRegionsByElectionID)
+router.route('/regions').get(authenticate, authorize, getRegions)
+router.route('/').post(authenticate, authorize, createRegion).get(authenticate, authorize, getRegion).put(authenticate, authorize, updateRegion)
+router.route('/toggleRegionState').put(authenticate, authorize, toggleRegionState)
+router.route('/regionsByElection').get(authenticate, authorize, getRegionsByElectionID)
 
 module.exports = router;

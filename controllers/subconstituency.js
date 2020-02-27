@@ -15,16 +15,9 @@ require("dotenv").config()
 
 exports.createSubconstituency = asyncHandler(async (req, res, next) => {
 
-    jwt.verify(req.token, process.env.JWT_SECRET_KEY, async (error, authdata) => {
+   
 
-        if (error) return new next(
-            new ErrorResponse(
-                error,
-                400
-            )
-        )
-
-        if (typeof authdata !== 'undefined' && authdata.userType.typeID == 1) {
+        if (req.userData.userType.typeID == 1) {
 
             const newSubconstituency = await Subconstituency.create(req.body)
 
@@ -42,23 +35,11 @@ exports.createSubconstituency = asyncHandler(async (req, res, next) => {
                 )
             )
         }
-
-
-    })
 })
 
 exports.getSubconstituency = asyncHandler(async (req, res, next) => {
 
-    jwt.verify(req.token, process.env.JWT_SECRET_KEY, async (error, authdata) => {
-
-        if (error) return new next(
-            new ErrorResponse(
-                error,
-                400
-            )
-        )
-
-        if (typeof authdata !== 'undefined' && authdata.userType.typeID == 1) {
+        if (req.userData.userType.typeID == 1) {
 
             const subconstituency = await Subconstituency.findOne({ $or: [{ _id: req.body.id }, { subconstituencyID: req.body.subconstituencyID }] }).select({ _id: 1, subconstituencyID: 1, arabicName: 1, englishName: 1 })
 
@@ -85,24 +66,13 @@ exports.getSubconstituency = asyncHandler(async (req, res, next) => {
                 )
             )
         }
-
-
-    })
-
 })
 
 exports.getSubconstituencies = asyncHandler(async (req, res, next) => {
 
-    jwt.verify(req.token, process.env.JWT_SECRET_KEY, async (error, authdata) => {
+   
 
-        if (error) return new next(
-            new ErrorResponse(
-                error,
-                400
-            )
-        )
-
-        if (typeof authdata !== 'undefined' && authdata.userType.typeID == 1) {
+        if (req.userData.userType.typeID == 1) {
             const subconstituencies = await Subconstituency.find().select({ _id: 1, subconstituencyID: 1, arabicName: 1, englishName: 1 })
 
             return res.status(200).json({ subconstituencies })
@@ -116,23 +86,13 @@ exports.getSubconstituencies = asyncHandler(async (req, res, next) => {
                 )
             )
         }
-
-
-    })
 })
 
 exports.getSubconstituencyByElectionID = asyncHandler(async (req, res, next) => {
 
-    jwt.verify(req.token, process.env.JWT_SECRET_KEY, async (error, authdata) => {
+   
 
-        if (error) return new next(
-            new ErrorResponse(
-                error,
-                400
-            )
-        )
-
-        if (typeof authdata !== 'undefined' && authdata.userType.typeID == 1) {
+        if (req.userData.userType.typeID == 1) {
 
 
             let results = await Election.aggregate([
@@ -209,24 +169,13 @@ exports.getSubconstituencyByElectionID = asyncHandler(async (req, res, next) => 
                 )
             )
         }
-
-
-    })
-
 })
 
 exports.getSubconstituencyByConstituencyID = asyncHandler(async (req, res, next) => {
 
-    jwt.verify(req.token, process.env.JWT_SECRET_KEY, async (error, authdata) => {
+   
 
-        if (error) return new next(
-            new ErrorResponse(
-                error,
-                400
-            )
-        )
-
-        if (typeof authdata !== 'undefined' && authdata.userType.typeID == 1) {
+        if (req.userData.userType.typeID == 1) {
 
             let results = await Constituency.aggregate([
 
@@ -303,24 +252,13 @@ exports.getSubconstituencyByConstituencyID = asyncHandler(async (req, res, next)
                 )
             )
         }
-
-
-    })
-
 })
 
 exports.getSubconstituencyByBureauID = asyncHandler(async (req, res, next) => {
 
-    jwt.verify(req.token, process.env.JWT_SECRET_KEY, async (error, authdata) => {
+   
 
-        if (error) return new next(
-            new ErrorResponse(
-                error,
-                400
-            )
-        )
-
-        if (typeof authdata !== 'undefined' && authdata.userType.typeID == 1) {
+        if (req.userData.userType.typeID == 1) {
 
             let results = await Bureau.aggregate([
 
@@ -395,25 +333,14 @@ exports.getSubconstituencyByBureauID = asyncHandler(async (req, res, next) => {
                 )
             )
         }
-
-
-    })
-
 })
 
 
 exports.updateSubconstituency = asyncHandler(async (req, res, next) => {
 
-    jwt.verify(req.token, process.env.JWT_SECRET_KEY, async (error, authdata) => {
+   
 
-        if (error) return new next(
-            new ErrorResponse(
-                error,
-                400
-            )
-        )
-
-        if (typeof authdata !== 'undefined' && authdata.userType.typeID == 1) {
+        if (req.userData.userType.typeID == 1) {
 
 
             const updatedsubconstituency = await Subconstituency.findOneAndUpdate(
@@ -450,23 +377,13 @@ exports.updateSubconstituency = asyncHandler(async (req, res, next) => {
                 )
             )
         }
-
-
-    })
 })
 
 exports.toggleSubconstituencyState = asyncHandler(async (req, res, next) => {
 
-    jwt.verify(req.token, process.env.JWT_SECRET_KEY, async (error, authdata) => {
+   
 
-        if (error) return new next(
-            new ErrorResponse(
-                error,
-                400
-            )
-        )
-
-        if (typeof authdata !== 'undefined' && authdata.userType.typeID == 1) {
+        if (req.userData.userType.typeID == 1) {
 
             const updatedSubconstituencyState = await Subconstituency.findOneAndUpdate(
                 {
@@ -505,10 +422,6 @@ exports.toggleSubconstituencyState = asyncHandler(async (req, res, next) => {
                 )
             )
         }
-
-
-    })
-
 })
 
 

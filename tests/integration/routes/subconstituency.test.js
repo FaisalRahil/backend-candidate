@@ -24,7 +24,7 @@ describe('Subconstituency route test', () => {
             password:"aaaaaa"
         })
        
-        jwToken = 'token ' + response.body.token;
+        jwToken = response.body.token;
 
 
         const newElection = {

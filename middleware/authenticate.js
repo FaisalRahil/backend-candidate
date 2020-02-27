@@ -9,10 +9,10 @@ module.exports = authenticate = (req,res,next) => {
 
 
     if(typeof authorizationToken !== 'undefined'){
-        const tokens = authorizationToken.split(' ')
-        const token = tokens[1]
-        req.token = token
+    
+        req.token = authorizationToken
         next()
+        
     }else{
         return next(
             new ErrorResponse(

@@ -45,11 +45,10 @@ const UserSchema  = mongoose.Schema({
                 typeID:2,
                 userType:"BureauUser"
             },
-            ,
             {
-                typeID:3,
-                userType:"CandidateUser"
-            },
+                userType: "candidatesDepatments"
+            }
+            
         ]
     },
     state:{

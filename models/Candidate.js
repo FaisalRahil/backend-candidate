@@ -23,15 +23,23 @@ const CandidateSchema = new mongoose.Schema({
         required: [true, "Please add a name"],
         maxlength: [50, "Name can not be more than 50 characters"]
     },
-    nid: String,
-    motherName:{
+    nationalID: {
+        type: String,
+        required: true,
+        unique:true
+    },
+    password: {
+        type: String,
+        required: true,
+    },
+    motherName: {
         type: String,
         trim: true,
     },
-    gender:{
+    gender: {
         type: String,
         required: [true, "Please add a name"],
-        enum:['male','femal']
+        enum: ['male', 'femal']
     },
 
     birthDate: {
@@ -67,15 +75,26 @@ const CandidateSchema = new mongoose.Schema({
         required: true
     },
     qualifications: [{
-        
-        path:String,
-        name:String
-        
-    }],
-    seatType:{
 
-        type:String,
-        enum:['Woman','Special Ethnic Group', 'Public', 'Private']
+        path: String,
+        name: String
+
+    }],
+    userType: {
+        type: {
+            typeID: Number,
+            userType: String
+        },
+        default:
+        {
+            typeID: 3,
+            userType: "CandidateUser"
+        }
+    },
+    seatType: {
+
+        type: String,
+        enum: ['Woman', 'Special Ethnic Group', 'Public', 'Private']
     },
     createdAt: {
         type: Date,

@@ -10,16 +10,9 @@ require("dotenv").config()
 
 exports.createRegion = asyncHandler(async (req, res, next) => {
 
-    jwt.verify(req.token, process.env.JWT_SECRET_KEY, async (error, authdata) => {
+   
 
-        if (error) return new next(
-            new ErrorResponse(
-                error,
-                400
-            )
-        )
-
-        if (typeof authdata !== 'undefined' && authdata.userType.typeID == 1) {
+        if (req.userData.userType.typeID == 1) {
 
             const newRegion = await Region.create(req.body)
 
@@ -37,24 +30,12 @@ exports.createRegion = asyncHandler(async (req, res, next) => {
                 )
             )
         }
-
-
-    })
-
 })
 
 exports.getRegions = asyncHandler(async (req, res, next) => {
 
-    jwt.verify(req.token, process.env.JWT_SECRET_KEY, async (error, authdata) => {
-
-        if (error) return new next(
-            new ErrorResponse(
-                error,
-                400
-            )
-        )
-
-        if (typeof authdata !== 'undefined' && authdata.userType.typeID == 1) {
+   
+        if (req.userData.userType.typeID == 1) {
 
             const regions = await Region.find().select({ electionID: 0, createdAt: 0, __v: 0 }).sort({ createdAt: -1 })
             res.status(200).json({ regions })
@@ -68,24 +49,14 @@ exports.getRegions = asyncHandler(async (req, res, next) => {
                 )
             )
         }
-
-
-    })
 })
 
 
 exports.getRegion = asyncHandler(async (req, res, next) => {
 
-    jwt.verify(req.token, process.env.JWT_SECRET_KEY, async (error, authdata) => {
+   
 
-        if (error) return new next(
-            new ErrorResponse(
-                error,
-                400
-            )
-        )
-
-        if (typeof authdata !== 'undefined' && authdata.userType.typeID == 1) {
+        if (req.userData.userType.typeID == 1) {
 
             const region = await Region.findOne({ $or: [{ _id: req.body.id }, { regionID: req.body.regionID }] }).select({ electionID: 0, createdAt: 0, __v: 0 })
 
@@ -112,25 +83,14 @@ exports.getRegion = asyncHandler(async (req, res, next) => {
                 )
             )
         }
-
-
-    })
-
 })
 
 // Joining two collection
 exports.getRegionsByElectionID = asyncHandler(async (req, res, next) => {
 
-    jwt.verify(req.token, process.env.JWT_SECRET_KEY, async (error, authdata) => {
+   
 
-        if (error) return new next(
-            new ErrorResponse(
-                error,
-                400
-            )
-        )
-
-        if (typeof authdata !== 'undefined' && authdata.userType.typeID == 1) {
+        if (req.userData.userType.typeID == 1) {
 
 
             let results = await Election.aggregate([
@@ -208,23 +168,14 @@ exports.getRegionsByElectionID = asyncHandler(async (req, res, next) => {
             )
         }
 
-
-    })
 })
 
 
 exports.updateRegion = asyncHandler(async (req, res, next) => {
 
-    jwt.verify(req.token, process.env.JWT_SECRET_KEY, async (error, authdata) => {
+   
 
-        if (error) return new next(
-            new ErrorResponse(
-                error,
-                400
-            )
-        )
-
-        if (typeof authdata !== 'undefined' && authdata.userType.typeID == 1) {
+        if (req.userData.userType.typeID == 1) {
 
             const updatedRegion = await Region.findOneAndUpdate(
                 {
@@ -260,23 +211,11 @@ exports.updateRegion = asyncHandler(async (req, res, next) => {
                 )
             )
         }
-
-
-    })
 })
 
 exports.toggleRegionState = asyncHandler(async (req, res, next) => {
 
-    jwt.verify(req.token, process.env.JWT_SECRET_KEY, async (error, authdata) => {
-
-        if (error) return new next(
-            new ErrorResponse(
-                error,
-                400
-            )
-        )
-
-        if (typeof authdata !== 'undefined' && authdata.userType.typeID == 1) {
+        if (req.userData.userType.typeID == 1) {
 
             const updatedRegion = await Region.findOneAndUpdate(
                 {
@@ -315,9 +254,6 @@ exports.toggleRegionState = asyncHandler(async (req, res, next) => {
                 )
             )
         }
-
-
-    })
 
 })
 

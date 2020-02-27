@@ -1,6 +1,7 @@
 const mongoose = require('mongoose')
 
 const ElectionSchema = mongoose.Schema({
+    
     startDate: {
         type: Date,
         required: [true, '']

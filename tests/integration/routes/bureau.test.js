@@ -23,7 +23,7 @@ describe('bureau route test', () => {
             password:"aaaaaa"
         })
        
-        jwToken = 'token ' + response.body.token;
+        jwToken = response.body.token;
 
         const newElection = {
             startDate: '2016-04-13',
@@ -48,7 +48,7 @@ describe('bureau route test', () => {
 
     })
 
-    it('shoud create new bureau', async () => {
+    it('shoud create a new bureau', async () => {
         const newBureau = {
             bureauID: Math.floor((Math.random() * 100000000) + 1),
             arabicName: "مكتب طرابلس المركز",

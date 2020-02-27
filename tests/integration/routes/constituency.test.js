@@ -27,7 +27,7 @@ describe('Constituency route test', () => {
             password:"aaaaaa"
         })
        
-        jwToken = 'token ' + response.body.token;
+        jwToken = response.body.token;
 
         const newElection = {
             startDate: '2016-04-13',
