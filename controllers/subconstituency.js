@@ -173,11 +173,7 @@ exports.getSubconstituencyByElectionID = asyncHandler(async (req, res, next) => 
 
 exports.getSubconstituencyByConstituencyID = asyncHandler(async (req, res, next) => {
 
-   
-
-        if (req.userData.userType.typeID == 1) {
-
-            let results = await Constituency.aggregate([
+    let results = await Constituency.aggregate([
 
                 {
                     $match: { $or: [{ "_id": mongoose.Types.ObjectId(req.body.id) }, { "constituencyID": req.body.constituencyID }] }
@@ -242,16 +238,6 @@ exports.getSubconstituencyByConstituencyID = asyncHandler(async (req, res, next)
                 success: true,
                 data: results[0]
             })
-
-        } else {
-
-            return next(
-                new ErrorResponse(
-                    `Unauthorized access`,
-                    401
-                )
-            )
-        }
 })
 
 exports.getSubconstituencyByBureauID = asyncHandler(async (req, res, next) => {
@@ -379,9 +365,14 @@ exports.updateSubconstituency = asyncHandler(async (req, res, next) => {
         }
 })
 
+exports.parseCSV = asyncHandler(async (req, res, next) => {
+
+    
+
+})
+
 exports.toggleSubconstituencyState = asyncHandler(async (req, res, next) => {
 
-   
 
         if (req.userData.userType.typeID == 1) {
 

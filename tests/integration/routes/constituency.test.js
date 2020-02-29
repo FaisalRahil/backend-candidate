@@ -180,8 +180,8 @@ describe('Constituency route test', () => {
 
         const updatedConstituency = {
             constituencyID: constituencyID,
-            arabicName: "Tripoli",
-            englishName: "طرابلس",
+            arabicName: "طرابلس",
+            englishName: "Tripoli",
         }
 
         const response = await request(app)
@@ -190,6 +190,8 @@ describe('Constituency route test', () => {
             .send(updatedConstituency)
             .expect(200)
             .expect('Content-Type', /json/)
+
+        
 
         expect(response.status).to.equal(200)
         expect(response.body.success).to.be.true
@@ -207,7 +209,7 @@ describe('Constituency route test', () => {
         const updatedConstituency = {
             constituencyID: 473467892734893,
             arabicName: "زاوية",
-            englishName: "Al-Zawiyah",
+            englishName: "Al Zawiyah",
         }
 
         const response = await request(app)
@@ -233,7 +235,7 @@ describe('Constituency route test', () => {
         const updatedConstituency = {
             id: generatedConstituencyID,
             arabicName: "زاوية",
-            englishName: "Al-Zawiyah",
+            englishName: "Al Zawiyah",
         }
 
         const response = await request(app)
@@ -242,7 +244,7 @@ describe('Constituency route test', () => {
             .send(updatedConstituency)
             .expect(200)
             .expect('Content-Type', /json/)
-
+           
         expect(response.status).to.equal(200)
         expect(response.body.success).to.be.true
         expect(response.body.data).to.be.not.undefined
@@ -253,15 +255,14 @@ describe('Constituency route test', () => {
         expect(response.body.data._id).to.be.eql(updatedConstituency.id)
         response.body.data.should.include.keys(["arabicName", "englishName", "_id", "state"]);
 
-
     })
 
     it('should not update a constituency based on non-existing _id', async () => {
 
         const updatedConstituency = {
             id: "5e195075705b65d4a1c52fb4",
-            arabicName: "Tripoli",
-            englishName: "طرابلس",
+            arabicName: "طرابلس",
+            englishName: "Tripoli",
         }
 
         const response = await request(app)
@@ -270,7 +271,7 @@ describe('Constituency route test', () => {
             .send(updatedConstituency)
             .expect(404)
             .expect('Content-Type', /json/)
-
+       
         expect(response.status).to.equal(404)
         expect(response.body.success).to.be.false;
         expect(response.body.error).to.be.not.undefined;

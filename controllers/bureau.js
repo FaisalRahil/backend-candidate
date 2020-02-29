@@ -1,5 +1,5 @@
 const mongoose = require('mongoose')
-const joi = require('@hapi/joi')
+
 
 const ErrorResponse = require("../utils/errorResponse");
 const asyncHandler = require("../middleware/async");
@@ -36,23 +36,7 @@ exports.createBureau = asyncHandler(async (req, res, next) => {
 
 exports.getBureau = asyncHandler(async (req, res, next) => {
 
-
-    const schema = joi.object().keys({
-        id: joi.string().description("id must be provided"),
-        bureauID: joi.number()
-    })
-
-    joi.valid(req.body, schema, (error, result) => {
-      
-        if(error){
-            res.status(400).json({
-                error:"",
-                
-            })
-
-        } 
-        
-    })
+   
 
     if (req.userData.userType.typeID == 1) {
 
@@ -81,7 +65,6 @@ exports.getBureau = asyncHandler(async (req, res, next) => {
             )
         )
     }
-
 
 
 })
@@ -254,7 +237,7 @@ exports.getBureausByElectionID = asyncHandler(async (req, res, next) => {
         if (!results || results.length === 0) {
             return next(
                 new ErrorResponse(
-                    `Region under this id ${req.body.id} was not found`,
+                    `Election under this id ${req.body.id} was not found`,
                     404
                 )
             )

@@ -28,7 +28,7 @@ describe('region route test', () => {
             password:"aaaaaa"
         })
        
-        jwToken = 'token ' + user.body.token;
+        jwToken = user.body.token;
 
         const newElection = {
             startDate: '2016-04-13',
@@ -41,8 +41,6 @@ describe('region route test', () => {
             .post('/api/v1/election/')
             .set({'Authorization':jwToken})
             .send(newElection)
-
-
 
         electionID = election.body.data._id
 

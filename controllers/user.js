@@ -102,7 +102,6 @@ exports.updateUser = asyncHandler(async (req, res, next) => {
 
 exports.toggleUserState = asyncHandler(async (req, res, next) => {
 
-
     if (req.userData.userType.typeID == 1) {
 
         const changeState = await User.updateOne({ _id: req.userData.id }, { state: req.body.state })

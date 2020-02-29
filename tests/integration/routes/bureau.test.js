@@ -218,7 +218,7 @@ describe('bureau route test', () => {
         response.body.should.include.keys(["error", "success"]);
     })
 
-    it('should update a Region based on existing bureauID', async () => {
+    it('should update a Bureau based on existing bureauID', async () => {
 
         let updatedBureau = {
             bureauID,
@@ -434,7 +434,7 @@ describe('bureau route test', () => {
         expect(response.status).to.equal(404)
         expect(response.body.success).to.be.false;
         expect(response.body.success).to.be.a("boolean");
-        expect(response.body.error).to.equal("Region under this id 5e1bb5e507516221677406d3 was not found")
+        expect(response.body.error).to.equal("Election under this id 5e1bb5e507516221677406d3 was not found")
         expect(response.body.error).to.be.a("string");
         response.body.should.include.keys(["error"])
     })

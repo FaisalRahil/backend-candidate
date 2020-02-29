@@ -3,6 +3,13 @@ const router = express.Router()
 
 const authenticate = require('../middleware/authenticate')
 const authorize = require('../middleware/authorize')
+const { getSubconstituencyValidator,
+    createConstituencyValidator,
+    updateSubconstituencyValidator,
+    toggleSubconstituencyStateValidator,
+    getSubconstituenciesBasedOnBureauIDValidator,
+    getSubconstituenciesBasedOnElectionIDValidator,
+    getSubconstituenciesBasedOnConstituencyIDValidator } = require('../middleware/subconstituency')
 
 const { getSubconstituencies,
     getSubconstituency,
@@ -14,10 +21,12 @@ const { getSubconstituencies,
     getSubconstituencyByConstituencyID } = require('../controllers/subconstituency')
 
 router.route('/subconstituencies').get(authenticate, authorize, getSubconstituencies)
-router.route('/').post(authenticate, authorize, createSubconstituency).get(authenticate, authorize, getSubconstituency).put(authenticate, authorize, updateSubconstituency)
-router.route('/toggleSubconstituencyState').put(authenticate, authorize, toggleSubconstituencyState)
-router.route('/subconstituenciesByElection').get(authenticate, authorize, getSubconstituencyByElectionID)
-router.route('/subconstituenciesByBureau').get(authenticate, authorize, getSubconstituencyByBureauID)
-router.route('/subconstituenciesByConstituency').get(authenticate, authorize, getSubconstituencyByConstituencyID)
+router.route('/').post(authenticate, authorize, createConstituencyValidator, createSubconstituency)
+    .get(authenticate, authorize, getSubconstituencyValidator, getSubconstituency)
+    .put(authenticate, authorize, updateSubconstituencyValidator, updateSubconstituency)
+router.route('/toggleSubconstituencyState').put(authenticate, authorize, toggleSubconstituencyStateValidator, toggleSubconstituencyState)
+router.route('/subconstituenciesByElection').get(authenticate, authorize, getSubconstituenciesBasedOnElectionIDValidator, getSubconstituencyByElectionID)
+router.route('/subconstituenciesByBureau').get(authenticate, authorize, getSubconstituenciesBasedOnBureauIDValidator, getSubconstituencyByBureauID)
+router.route('/subconstituenciesByConstituency').get(authenticate, authorize, getSubconstituenciesBasedOnConstituencyIDValidator, getSubconstituencyByConstituencyID)
 
 module.exports = router;
