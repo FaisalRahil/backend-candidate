@@ -54,7 +54,7 @@ exports.createBureauValidator = asyncHandler(async (req, res, next) => {
             "string.alphanum":"يجب أن يحتوي معرف الإنتخابات على أرقام و حروف فقط"
         }),
         regionID: joi.string().alphanum().required().length(24).messages({
-            "number.base":"يجب إختيار المنطقة",
+            "=+++++ــــ==number.base":"يجب إختيار المنطقة",
             "any.required":"يجب أن يكون طول معرف المنطقة بطول 24 حرفاً",
             "string.alphanum":"يجب أن يحتوي معرف المنطقة على أرقام و حروف فقط"
         }),

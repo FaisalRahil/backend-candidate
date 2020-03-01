@@ -10,6 +10,7 @@ const asyncHandler = require("../middleware/async");
 const User = require("../models/User");
 const Bureau = require("../models/Bureau");
 
+
 require("dotenv").config()
 
 
@@ -18,8 +19,7 @@ require("dotenv").config()
 exports.createUser = asyncHandler(async (req, res, next) => {
 
     if (req.userData.userType.typeID == 1) {
-        req.body.password = bcrypt.hashSync(req.body.password, req.body.salt)
-
+        req.body.password = bcrypt.hashSync(req.body.password, 2)
         const user = await User.create(req.body)
 
         res.status(201).json({
@@ -40,11 +40,11 @@ exports.createUser = asyncHandler(async (req, res, next) => {
 exports.getUser = asyncHandler(async (req, res, next) => {
 
 
-    const user = await User.findOne({ email: req.body.email }).select({ _id: 1, name: 1, password: 1, userType: 1, salt: 1 })
+    const user = await User.findOne({ email: req.body.email }).select({ _id: 1, name: 1, password: 1, userType: 1})
 
     if (await bcrypt.compare(req.body.password, user.password)) {
 
-        jwt.sign({ id: user._id, name: user.name, userType: user.userType }, process.env.JWT_SECRET_KEY, { expiresIn: '4h' }, (error, token) => {
+        jwt.sign({ id: user._id, name: user.name, userType: user.userType }, process.env.JWT_SECRET_KEY, { expiresIn: '7h' }, (error, token) => {
             res.status(201).json({
                 success: true,
                 token
@@ -85,7 +85,7 @@ exports.updateUser = asyncHandler(async (req, res, next) => {
 
     if (req.userData.userType.typeID == 1 || req.userData.userType.typeID == 2) {
 
-        const updatingUser = await User.updateOne({ _id: req.userData.id }, req.body)
+        const updatingUser = await User.updateOne({ _id: req.body.id }, req.body)
         res.status(200).json({ updatingUser })
 
     } else {
@@ -104,7 +104,7 @@ exports.toggleUserState = asyncHandler(async (req, res, next) => {
 
     if (req.userData.userType.typeID == 1) {
 
-        const changeState = await User.updateOne({ _id: req.userData.id }, { state: req.body.state })
+        const changeState = await User.updateOne({ _id: req.body.id }, { state: req.body.state })
         res.status(200).json({ changeState })
 
     } else {

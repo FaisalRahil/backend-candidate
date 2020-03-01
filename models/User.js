@@ -23,14 +23,6 @@ const UserSchema  = mongoose.Schema({
         type:String,
         require: true,
     },
-    salt:{
-        type:Number,
-        require: true,
-    },
-    bureauID:{
-        type:mongoose.Schema.Types.ObjectId,
-        require: true,
-    },
     userType:{
         type:{
             typeID:Number,
@@ -39,14 +31,19 @@ const UserSchema  = mongoose.Schema({
         enum:[
             {
                 typeID:1,
-                userType:"SuperUser"
+                userType:"Super User"
             },
             {
                 typeID:2,
-                userType:"BureauUser"
+                userType:"Bureau User",
+                bureauID:{
+                    type:mongoose.Schema.Types.ObjectId,
+                    require: true,
+                }
             },
             {
-                userType: "candidatesDepatments"
+                typeID:3,
+                userType: "Candidates Department"
             }
             
         ]
