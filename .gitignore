@@ -3,3 +3,4 @@ config/config.env
 .env
 .nyc_output
 coverage
+certificates
