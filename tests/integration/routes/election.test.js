@@ -21,6 +21,7 @@ describe('election route test', () => {
         })
        
         jwToken = response.body.token;
+       
     })
 
     it('should not response on requesting non-existing route', async () => {

@@ -5,6 +5,8 @@ const morgan = require("morgan");
 const connectDB = require("./config/db");
 const colors = require("colors");
 const errorHandler = require("./middleware/error");
+const fileupload = require("express-fileupload")
+
 
 
 
@@ -19,6 +21,11 @@ const app = express();
 // Body parser
 app.use(express.json());
 
+//File Upload
+app.use(fileupload())
+
+
+
 // Route files
 const candidates = require("./routes/candidates")
 const election = require("./routes/election")
@@ -27,7 +34,11 @@ const bureau = require("./routes/bureau")
 const constituency = require("./routes/constituency")
 const subconstituency = require("./routes/subconstituency")
 const user = require("./routes/user")
+const vr = require("./routes/vr")
+const candidate = require("./routes/candidate");
+const endorsement = require("./routes/endorsement");
 const courses = require("./routes/courses");
+
 
 
 // Mount routers
@@ -38,6 +49,9 @@ app.use("/api/v1/bureau", bureau);
 app.use("/api/v1/constituency", constituency);
 app.use("/api/v1/subconstituency", subconstituency);
 app.use("/api/v1/user", user);
+app.use("/api/v1/candidate", candidate);
+app.use("/api/v1/endorsement", endorsement);
+app.use("/api/v1/vr", vr);
 
 app.use(errorHandler);
 

@@ -3,28 +3,13 @@ const slugify = require("slugify");
 const geocoder = require("../utils/geocoder");
 
 const CandidateSchema = new mongoose.Schema({
-    firstName: {
-        type: String,
-        required: [true, "Please add a name"],
-        maxlength: [50, "Name can not be more than 50 characters"]
-    },
-    fatherName: {
-        type: String,
-        required: [true, "Please add a name"],
-        maxlength: [50, "Name can not be more than 50 characters"]
-    },
-    grandFatherName: {
-        type: String,
-        required: [true, "Please add a name"],
-        maxlength: [50, "Name can not be more than 50 characters"]
-    },
-    sureName: {
+    name: {
         type: String,
         required: [true, "Please add a name"],
         maxlength: [50, "Name can not be more than 50 characters"]
     },
     nationalID: {
-        type: String,
+        type: Number,
         required: true,
         unique:true
     },
@@ -39,7 +24,7 @@ const CandidateSchema = new mongoose.Schema({
     gender: {
         type: String,
         required: [true, "Please add a name"],
-        enum: ['male', 'femal']
+        enum: ['ذكر', 'أنثى']
     },
 
     birthDate: {
@@ -74,11 +59,9 @@ const CandidateSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         required: true
     },
-    qualifications: [{
-
-        path: String,
-        name: String
-
+    certificates: [{
+        name: String,
+        path: String
     }],
     userType: {
         type: {
@@ -88,14 +71,25 @@ const CandidateSchema = new mongoose.Schema({
         default:
         {
             typeID: 3,
-            userType: "CandidateUser"
+            userType: "Candidate User"
         }
     },
     seatType: {
 
         type: String,
-        enum: ['Woman', 'Special Ethnic Group', 'Public', 'Private']
+        enum: ['مقعد للمرأة', 'مقعد خاص لعرق خاص', 'عام', 'خاص']
     },
+    representative:{
+
+    },
+    state:{
+       type:Boolean,
+       default:true
+    },
+    approved:{
+        type:Boolean,
+        default:false
+     },
     createdAt: {
         type: Date,
         default: Date.now

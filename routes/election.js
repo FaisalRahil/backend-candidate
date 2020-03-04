@@ -9,7 +9,7 @@ const {getEelections, getElection, createElection, updateElection, toggleElectio
 
 
 router.route('/elections').get(authenticate, authorize, getEelections)
-router.route('/').post(authenticate, createElectionValidator, authorize, createElection).get(authenticate, authorize, getElectionValidator, getElection).put(authenticate, authorize, updateElectionValidator, updateElection)
+router.route('/').post(authenticate, authorize, createElectionValidator, createElection).get(authenticate, authorize, getElectionValidator, getElection).put(authenticate, authorize, updateElectionValidator, updateElection)
 router.route('/toggleElectionState').put(authenticate, authorize, toggleElectionStateValidator, toggleElectionState)
 
 

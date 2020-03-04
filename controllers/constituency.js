@@ -90,8 +90,6 @@ exports.getConstituencies = asyncHandler(async (req, res, next) => {
 
 exports.getConstituenciesBasedOnElectionID = asyncHandler(async (req, res, next) => {
 
-
-
     if (req.userData.userType.typeID == 1) {
 
         let results = await Election.aggregate([
