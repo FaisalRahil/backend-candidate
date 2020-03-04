@@ -177,8 +177,8 @@ exports.toggleCandidateApproval = asyncHandler(async (req, res, next) => {
 
     if (req.userData.userType.typeID == 2) {
 
-        const changeState = await User.updateOne({ $or: [{ _id: req.userData.candidateID }, { nationalID: req.userData.candidateNationalID }] }, { state: req.body.state })
-        res.status(200).json({ changeState })
+        const approval = await Candidate.updateOne({ $or: [ { nationalID: req.body.candidateNationalID }] }, { state: req.body.state })
+        res.status(200).json({ approval })
 
     } else {
 
@@ -195,7 +195,7 @@ exports.toggleCandidateState = asyncHandler(async (req, res, next) => {
 
     if (req.userData.userType.typeID == 3) {
 
-        const changeState = await User.updateOne({ $or: [{ _id: req.userData.candidateID }, { nationalID: req.userData.candidateNationalID }] }, { state: req.body.state })
+        const changeState = await Candidate.updateOne({ $or: [{ _id: req.userData.candidateID }, { nationalID: req.userData.candidateNationalID }] }, { state: req.body.state })
         res.status(200).json({ changeState })
 
     } else {
