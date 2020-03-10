@@ -244,12 +244,12 @@ exports.getSubconstituencyByBureauID = asyncHandler(async (req, res, next) => {
 
    
 
-        if (req.userData.userType.typeID == 1) {
+        if (req.userData.userType.typeID == 1 || req.userData.userType.typeID == 2 || req.userData.userType.typeID == 3) {
 
             let results = await Bureau.aggregate([
 
                 {
-                    $match: { $or: [{ "_id": mongoose.Types.ObjectId(req.body.id) }, { "bureauID": req.body.bureauID }] }
+                    $match: { $or: [{ "_id": mongoose.Types.ObjectId(req.body.id) }, { "bureauID": req.userData.bureauID }] }
                 },
 
                 {

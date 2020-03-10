@@ -2,9 +2,11 @@ const express = require("express");
 const router = express.Router();
 
 const {
+    checkVoterRegistartion,
     createCandidate,
     getCandidate,
     updateCandidate,
+    getCandidates,
     updatePassword,
     toggleCandidateApproval
 } = require("../controllers/candidate");
@@ -12,8 +14,13 @@ const {
 const authorize = require('../middleware/authorize')
 const authenticate = require('../middleware/authenticate')
 
+router
+    .route("/checkVoterRegistartion")
+    .get(checkVoterRegistartion)
 
-
+router
+    .route("/candidates")
+    .get(authenticate, authorize, getCandidates)
 
 router
     .route("/")

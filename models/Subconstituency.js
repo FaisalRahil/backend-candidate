@@ -32,6 +32,12 @@ const SubconstituencySchema  = mongoose.Schema({
         type:Boolean,
         default: true,
     },
+    seatType:{
+        type:{
+            seatTypeID:Number,
+            seatType:String
+        }
+    },
     createdAt: {
         type: Date,
         default: Date.now

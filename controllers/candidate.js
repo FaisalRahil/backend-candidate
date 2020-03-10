@@ -44,20 +44,34 @@ exports.getCandidate = asyncHandler(async (req, res, next) => {
 
 })
 
-exports.createCandidate = asyncHandler(async (req, res, next) => {
+exports.checkVoterRegistartion = asyncHandler(async (req, res, next) => {
 
-    const voter = await vr.findOne({ nationalID: req.body.nationalID })
+    const voter = await vr.findOne({ nationalID: req.body.nationalID }).select({_id:0,name:1})
 
     if (voter) {
+        res.status(200).json({
+            success: true,
+            data: voter
+        })
+
+    }else {
+
+        return next(
+            new ErrorResponse(
+                "لست مسجل كناخب، لذلك لا تستطيع التسجيل كمرشح",
+                401
+            )
+        )
+    }
+
+})
+exports.createCandidate = asyncHandler(async (req, res, next) => {
 
 
         req.body.name = voter.name
-        req.body.birthDate = voter.birthDate
+        // req.body.birthDate = voter.birthDate
         req.body.nationalID = voter.nationalID
         const candidate = await Candidate.create(req.body)
-        fs.mkdirSync(path.join(__dirname, `../certificates/${candidate._id}`), { recursive: true })
-
-
 
         if (!candidate)
             return next(
@@ -66,7 +80,7 @@ exports.createCandidate = asyncHandler(async (req, res, next) => {
                     401
                 )
             )
-
+        fs.mkdirSync(path.join(__dirname, `../certificates/${candidate._id}`), { recursive: true })
         for (let key of Object.keys(req.files)) {
 
             let filePath = path.join(__dirname, `../certificates/${candidate._id}`, req.files[key].name)
@@ -87,49 +101,73 @@ exports.createCandidate = asyncHandler(async (req, res, next) => {
             success: true,
             data: candidate
         })
-    } else {
 
+})
+
+
+exports.getCandidates = asyncHandler(async (req, res, next) => {
+
+    if (req.userData.userType.typeID == 2) {
+
+        const candidates = await Candidate.find({ bureauID: req.userData.userType.bureauID }).select({ _id: 1, name: 1, nationalID: 1 })
+
+        if(!candidates){
+            return next(
+                new ErrorResponse(
+                    'User not found',
+                    404
+                )
+            )
+        }
+
+        res.status(200).json({
+            success: true,
+            data: candidates
+        })
+
+
+    }else{
         return next(
             new ErrorResponse(
-                "لست مسجل كناخب، لذلك لا تستطيع التسجيل كمرشح",
+                 'ليس لديك الصلاحية للحصول على الناخبين',
                 401
             )
         )
+
     }
 
 
 })
-
 
 exports.updateCandidate = asyncHandler(async (req, res, next) => {
 
 
     if (req.userData.userType.typeID == 3) {
 
-    const updatedCandidate = await Candidate.updateOne({
-        $or: [{ _id: req.userData.id }, { nationalID: req.userData.nationalID }]
-    },
-        req.body,
-    {
-         new: true,
-        runValidators: true
-    })
+        const updatedCandidate = await Candidate.updateOne({
+            $or: [{ _id: req.userData.id }, { nationalID: req.userData.nationalID }]
+        },
+            req.body,
+            {
+                new: true,
+                runValidators: true
+            })
 
-    if (!updatedCandidate) {
+        if (!updatedCandidate) {
 
-        return next(
-            new ErrorResponse(
-                req.body.id ? 'لا يوجد مرشح تحت هذا التعريف ' + req.body.id : 'لا يوجد مرشح تحت هذا البريد الإلكتروني ' + req.body.email,
-                404
+            return next(
+                new ErrorResponse(
+                    req.body.id ? 'لا يوجد مرشح تحت هذا التعريف ' + req.body.id : 'لا يوجد مرشح تحت هذا البريد الإلكتروني ' + req.body.email,
+                    404
+                )
             )
-        )
 
-    }
-    res.status(200).json({
-        success: true,
-        data: `تم تحديث كلمة المرور`
-    })
-    }else{
+        }
+        res.status(200).json({
+            success: true,
+            data: `تم تحديث كلمة المرور`
+        })
+    } else {
         return next(
             new ErrorResponse(
                 ['غير مخول لإتمام العملية', 'Unauthorized to complete this operation'],
@@ -177,7 +215,7 @@ exports.toggleCandidateApproval = asyncHandler(async (req, res, next) => {
 
     if (req.userData.userType.typeID == 2) {
 
-        const approval = await Candidate.updateOne({ $or: [ { nationalID: req.body.candidateNationalID }] }, { state: req.body.state })
+        const approval = await Candidate.updateOne({ $or: [{ nationalID: req.body.candidateNationalID }] }, { state: req.body.state })
         res.status(200).json({ approval })
 
     } else {

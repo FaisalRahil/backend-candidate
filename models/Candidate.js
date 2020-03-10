@@ -13,6 +13,10 @@ const CandidateSchema = new mongoose.Schema({
         required: true,
         unique:true
     },
+    candidateNumber:{
+        type: Number,
+        unique:true
+    },
     password: {
         type: String,
         required: true,
@@ -26,7 +30,6 @@ const CandidateSchema = new mongoose.Schema({
         required: [true, "Please add a name"],
         enum: ['ذكر', 'أنثى']
     },
-
     birthDate: {
         type: Date,
         required: [true, "Please add a dateBirth"]

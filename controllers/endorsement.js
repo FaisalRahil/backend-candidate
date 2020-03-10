@@ -143,7 +143,7 @@ exports.getEndorsements = asyncHandler(async (req, res, next) => {
         if (!results || results.length === 0) {
             return next(
                 new ErrorResponse(
-                    `Candidate under this election id ${req.body.id} was not found`,
+                    `Candidate under this id ${req.body.id} was not found`,
                     404
                 )
             )
@@ -175,7 +175,7 @@ exports.updateEndorsement = asyncHandler(async (req, res, next) => {
 
         const updatedEndorsement = await Endorsement.findOneAndUpdate(
             {
-                $or: [{ _id: req.body.id ? mongoose.Types.ObjectId(req.body.id) : mongoose.Types.ObjectId(req.userData.id) }, { nationlID: req.body.nationalID ? req.body.nationalID : req.userData.nationalID }]
+                $or: [{ _id: eq.userData.id }, { nationlID: req.body.nationalID ? req.body.nationalID : req.userData.nationalID }]
             },
             req.body,
             {
