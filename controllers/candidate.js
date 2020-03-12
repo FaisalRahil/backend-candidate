@@ -68,9 +68,7 @@ exports.checkVoterRegistartion = asyncHandler(async (req, res, next) => {
 exports.createCandidate = asyncHandler(async (req, res, next) => {
 
 
-        req.body.name = voter.name
-        // req.body.birthDate = voter.birthDate
-        req.body.nationalID = voter.nationalID
+       
         const candidate = await Candidate.create(req.body)
 
         if (!candidate)

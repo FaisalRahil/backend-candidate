@@ -18,7 +18,7 @@ require("dotenv").config()
 
 exports.createUser = asyncHandler(async (req, res, next) => {
 
-    if (req.userData.userType.typeID == 1 || req.userData.userType.typeID == 2) {
+    if (req.userData.userType.typeID == 1) {
         req.body.password = bcrypt.hashSync(req.body.password, 2)
         const user = await User.create(req.body)
 

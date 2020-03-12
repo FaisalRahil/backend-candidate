@@ -3,7 +3,7 @@ const express = require("express");
 const dotenv = require("dotenv");
 const morgan = require("morgan");
 const connectDB = require("./config/db");
-const colors = require("colors");
+const cors = require("cors");
 const errorHandler = require("./middleware/error");
 const fileupload = require("express-fileupload")
 
@@ -58,6 +58,7 @@ app.use(errorHandler);
 // Dev logging middleware
 if (process.env.NODE_ENV === "development") {
     app.use(morgan("dev"));
+    app.use(cors())
 }
 
 const PORT = process.env.PORT || 5000;
