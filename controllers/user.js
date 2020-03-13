@@ -39,6 +39,7 @@ exports.createUser = asyncHandler(async (req, res, next) => {
 
 exports.getUser = asyncHandler(async (req, res, next) => {
 
+    
 
     const user = await User.findOne({ email: req.body.email }).select({ _id: 1, name: 1, password: 1, userType: 1 })
     

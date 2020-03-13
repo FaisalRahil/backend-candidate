@@ -3,7 +3,8 @@ const express = require("express");
 const dotenv = require("dotenv");
 const morgan = require("morgan");
 const connectDB = require("./config/db");
-const cors = require("cors");
+const colors = require("colors");
+const cors = require("cors")
 const errorHandler = require("./middleware/error");
 const fileupload = require("express-fileupload")
 
@@ -23,6 +24,9 @@ app.use(express.json());
 
 //File Upload
 app.use(fileupload())
+
+
+app.use(cors())
 
 
 
