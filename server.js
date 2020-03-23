@@ -8,6 +8,7 @@ const cors = require("cors")
 const errorHandler = require("./middleware/error");
 const fileupload = require("express-fileupload")
 
+const bodyParser = require('body-parser')
 
 
 
@@ -27,6 +28,7 @@ app.use(fileupload())
 
 
 app.use(cors())
+app.options('*', cors());
 
 
 

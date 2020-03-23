@@ -46,7 +46,7 @@ exports.getUser = asyncHandler(async (req, res, next) => {
     if (await bcrypt.compare(req.body.password, user.password)) {
 
         jwt.sign({ id: user._id, name: user.name, userType: user.userType}, process.env.JWT_SECRET_KEY, { expiresIn: '7h' }, (error, token) => {
-            res.status(201).json({
+           return res.status(201).json({
                 success: true,
                 token
             })
